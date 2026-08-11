@@ -1,0 +1,415 @@
+\documentclass[11pt]{amsart}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[margin=1.2in]{geometry}
+\usepackage{hyperref}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{proposition}[theorem]{Proposition}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\Cp}{\mathbb{C}_{+}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\HH}{H^{2}(\Cp)}
+\newcommand{\Hinf}{H^{\infty}(\Cp)}
+\newcommand{\KT}{K_{\Theta}}
+\newcommand{\dist}{\operatorname{dist}}
+\newcommand{\re}{\operatorname{Re}}
+\newcommand{\im}{\operatorname{Im}}
+
+\title{The scalar zeta scattering semigroup is not uniformly\\
+exponentially stable, unconditionally}
+\author{OpenAI Codex}
+\date{19 July 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Let $\xi$ denote the completed Riemann zeta function, let
+$\Theta(s)=\xi(2s)/\xi(1+2s)$, which is inner on the right half-plane, and
+let $Z(t)$ be the truncated translation semigroup on the model space
+$\KT = H^{2}\ominus\Theta H^{2}$. We prove unconditionally that
+$\|Z(t)\|=1$ for every $t\ge 0$, so the growth bound of $Z$ is $0$;
+equivalently, $\dist_{H^{\infty}}(e^{-ts},\Theta H^{\infty})=1$ for every
+$t>0$. Under the Riemann hypothesis the point spectrum of the generator
+lies on the line $\re\lambda=-\tfrac14$, so the spectral bound--growth
+bound gap of this semigroup is maximal \emph{even assuming RH}. The
+mechanism is arithmetic: by Selberg's theorem a positive proportion of
+zeta zeros lie on the critical line, and these zeros cluster with
+unbounded multiplicity in shrinking windows, producing explicit
+normalized reproducing kernels on which the semigroup is asymptotically
+norm-preserving. Consequently, no operator-norm form of the
+Lax--Phillips energy-decay criterion for RH can hold for any realization
+of the scattering semigroup that is norm-equivalent to this scalar
+model; the per-vector (local energy decay) form of the criterion is
+untouched.
+\end{abstract}
+
+\section{Introduction}
+
+Lax and Phillips \cite{LaxPhillips} and Faddeev--Pavlov \cite{FaddeevPavlov}
+connected the Riemann hypothesis to the decay of the energy semigroup
+$Z(t)$ of the automorphic wave equation on the modular surface: RH is
+equivalent to exponential decay of $Z(t)f$ for initial data $f$ of
+compact support, at rate governed by the real parts of the resonances,
+which sit at distance $\tfrac14$ from the imaginary axis if and only if
+RH holds. It is tempting to formulate the criterion in operator norm,
+\begin{equation}\label{eq:naive}
+  \lim_{t\to\infty}\frac1t\log\|Z(t)\| \le -\tfrac14
+  \qquad\text{(purportedly equivalent to RH),}
+\end{equation}
+and statements of this shape appear in the literature (e.g.\ Lax's
+equation~(54) in \cite{LaxTodo}).
+
+The purpose of this note is to show that \eqref{eq:naive} fails
+\emph{unconditionally} for the canonical scalar realization of the
+scattering semigroup: the truncated translation semigroup on the model
+space of the inner function $\Theta(s)=\xi(2s)/\xi(1+2s)$, whose zeros
+are the points $\rho/2$ over the nontrivial zeros $\rho$ of $\zeta$.
+Precisely, $\|Z(t)\|=1$ for all $t$, so the uniform growth bound is $0$
+regardless of the truth of RH, while the spectral bound is $-\tfrac14$
+under RH. The proof is elementary once one observes that the on-line
+zeros guaranteed by Selberg's theorem \cite{Selberg} cluster with
+unbounded multiplicity: clusters of $m$ zeros make $|\Theta|$ decay like
+$q^{m}$ at nearby points of small real part, and normalized reproducing
+kernels at such points are asymptotic eigenvectors of $Z(t)^{*}$ with
+eigenvalue modulus arbitrarily close to $1$.
+
+Since the argument uses only zeros \emph{on} the critical line---which
+exist in both the RH-true and RH-false worlds---it cannot bear on RH
+itself. Its content is a correction of formulation: the RH-equivalent
+statement in the Lax--Phillips criterion is the per-vector decay of
+$Z(t)f$ for fixed admissible data, and any operator-norm strengthening
+of it is false. In semigroup-theoretic language, the scalar zeta
+scattering semigroup exhibits the maximal possible gap between spectral
+bound and growth bound (cf.\ \cite{EngelNagel, GearhartPruess}), with
+the gap forced by the arithmetic of the zero distribution. The
+phenomenon fits the general framework of spectral singularities of
+contractive semigroups of Naboko--Romanov \cite{NabokoRomanov}, here
+with the singularity located at infinity.
+
+\subsection*{Relation to the Lax--Phillips semigroup}
+Our theorem concerns the scalar model semigroup on $\KT$ and is
+self-contained. Transferring the conclusion to the energy-space
+semigroup of \cite{LaxPhillips} requires a unitary (or norm-)
+equivalence between that semigroup and the scalar compression; such an
+identification is developed by Uetake \cite{Uetake}. We do not re-derive
+it here, and we state the consequence for \eqref{eq:naive}
+conditionally on it (Corollary~\ref{cor:LP}). Note that the full
+scattering matrix $S_{c}(s)=-\frac{s-1/2}{s+1/2}\,\Theta(s)$ differs
+from $\Theta$ by a single Blaschke factor, which changes neither the
+cluster structure of the zero set nor, therefore, the conclusion of the
+main theorem (Remark~\ref{rem:extra-factor}).
+
+\section{Preliminaries}
+
+Let $\Cp=\{s\in\mathbb C:\re s>0\}$ and let $\HH$, $\Hinf$ be the Hardy
+spaces of the half-plane. For $\mu\in\Cp$ the reproducing kernel of
+$\HH$ is
+\[
+  k_{\mu}(s)=\frac{1}{2\pi}\,\frac{1}{s+\bar\mu},
+  \qquad
+  \langle f,k_{\mu}\rangle=f(\mu),
+  \qquad
+  \|k_{\mu}\|^{2}=k_{\mu}(\mu)=\frac{1}{4\pi\,\re\mu}.
+\]
+For an inner function $\Theta$ on $\Cp$, the model space is
+$\KT=\HH\ominus\Theta\HH$, with reproducing kernel
+\[
+  k^{\Theta}_{\mu}
+  = P_{\KT}k_{\mu}
+  = k_{\mu}-\overline{\Theta(\mu)}\,\Theta k_{\mu},
+  \qquad
+  \|k^{\Theta}_{\mu}\|^{2}
+  = \bigl(1-|\Theta(\mu)|^{2}\bigr)\|k_{\mu}\|^{2}.
+\]
+For $\varphi\in\Hinf$ the truncated Toeplitz operator is
+$A_{\varphi}=P_{\KT}M_{\varphi}|_{\KT}$. We will use two standard facts
+(see \cite{GMR, Sarason}):
+\begin{enumerate}
+\item[(i)] $A_{\varphi}^{*}g = P_{H^{2}}(\bar\varphi g)$ for
+  $g\in\KT$, and $K_{\Theta}$ is invariant under the co-analytic
+  Toeplitz operator $T_{\bar\varphi}$; moreover
+  $T_{\bar\varphi}k_{\mu}=\overline{\varphi(\mu)}\,k_{\mu}$ for every
+  $\mu\in\Cp$.
+\item[(ii)] (Sarason \cite{Sarason})
+  $\|A_{\varphi}\|=\dist_{H^{\infty}}(\varphi,\Theta\Hinf)$.
+\end{enumerate}
+The \emph{truncated translation semigroup} on $\KT$ is
+\[
+  Z(t) := A_{\varphi_{t}},
+  \qquad
+  \varphi_{t}(s)=e^{-ts}
+  \quad (t\ge 0),
+\]
+a strongly continuous contraction semigroup whose generator we denote
+$A$; its point spectrum is $\{-\bar a:\Theta(a)=0\}$, with eigenvectors
+of $Z(t)^{*}$ the kernels $k_{a}=k^{\Theta}_{a}$ at zeros $a$ of
+$\Theta$. (Adjoint and sign conventions differ across the literature;
+none affects operator norms, which is all we use.)
+
+\section{The inner function}
+
+\begin{lemma}\label{lem:inner}
+Let $\xi(w)=\tfrac12 w(w-1)\pi^{-w/2}\Gamma(w/2)\zeta(w)$ and
+\[
+  \Theta(s)=\frac{\xi(2s)}{\xi(1+2s)}
+  =\sqrt{\pi}\;\frac{2s-1}{2s+1}\,
+   \frac{\Gamma(s)}{\Gamma(s+\tfrac12)}\,
+   \frac{\zeta(2s)}{\zeta(2s+1)}.
+\]
+Then $\Theta$ is inner on $\Cp$. Its zero set in $\Cp$ is exactly
+$\{\rho/2:\zeta(\rho)=0,\ 0<\re\rho<1\}$, with multiplicities, and there
+is no cancellation: $\xi(1+\rho)\neq0$ for every nontrivial zero
+$\rho$.
+\end{lemma}
+
+\begin{proof}
+By the functional equation $\xi(w)=\xi(1-w)$ we have
+$\xi(1+2s)=\xi(-2s)$, so the zeros of the denominator in $\Cp$ would
+require $1+2s=\rho$, i.e.\ $\re s=(\re\rho-1)/2\in(-\tfrac12,0)$;
+hence $\Theta$ is analytic on the closed right half-plane (the trivial
+zeros of $\zeta(2s)$ lie at $\re s<0$ and are absorbed by $\Gamma$
+poles in $\xi$; the apparent zero of $2s-1$ at $s=\tfrac12$ cancels the
+pole of $\zeta(2s)$). Zeros in $\Cp$: $\xi(2s)=0$ iff $2s=\rho$, giving
+$s=\rho/2$ with $\re(\rho/2)\in(0,\tfrac12)$; and
+$\xi(1+\rho)\neq0$ since $\re(1+\rho)>1$.
+
+Boundary modulus: since $\xi(\bar w)=\overline{\xi(w)}$ and
+$\xi(1+2i\tau)=\xi(-2i\tau)=\overline{\xi(2i\tau)}$, we get
+$|\Theta(i\tau)|=1$ for all $\tau\in\R$ ($\xi$ does not vanish on
+$\re w=0$).
+
+Growth: for $\re s\ge 2$ the factor $\zeta(2s)/\zeta(2s+1)$ is bounded
+(absolute convergence) and $\Gamma(s)/\Gamma(s+\tfrac12)=O(|s|^{-1/2})$
+by Stirling, uniformly in $|\arg s|\le\pi/2$; for $0<\re s<2$ one has
+the finite-order bound $\zeta(2s)\ll(1+|s|)^{A}$ and the classical
+lower bound $1/\zeta(\sigma+it)\ll(\log(|t|+2))^{7}$ for $\sigma\ge1$
+\cite[Ch.~3]{Titchmarsh}, so $|\Theta(s)|\ll(1+|s|)^{B}$ on
+$\overline{\Cp}$. A function analytic on $\Cp$, continuous on the
+closure, of polynomial growth, with modulus $\le1$ on the boundary is
+bounded by $1$ on $\Cp$ by the Phragm\'en--Lindel\"of principle for a
+half-plane. Hence $\Theta\in\Hinf$ with unimodular boundary values:
+$\Theta$ is inner.
+\end{proof}
+
+\section{Clusters of critical zeros}
+
+\begin{lemma}\label{lem:clusters}
+There exist $y_{n}\to\infty$, integers $m_{n}\to\infty$, and real
+numbers $\varepsilon_{n,1},\dots,\varepsilon_{n,m_{n}}$ with
+$\max_{j}|\varepsilon_{n,j}|\to0$, such that the points
+\[
+  a_{n,j}=\tfrac14+i\,(y_{n}+\varepsilon_{n,j}),
+  \qquad j=1,\dots,m_{n},
+\]
+are distinct zeros of $\Theta$.
+\end{lemma}
+
+\begin{proof}
+By Selberg's theorem \cite{Selberg} the number $N_{0}(T)$ of zeros of
+$\zeta$ on the critical line with ordinate in $(0,T]$ satisfies
+$N_{0}(T)\ge cT\log T$ for some $c>0$ and all large $T$. Cover $(0,T]$
+by $\lceil T(\log T)^{1/2}\rceil$ windows of length
+$h_{T}=(\log T)^{-1/2}$. The average number of on-line ordinates per
+window is $\ge c'(\log T)^{1/2}$, so some window contains
+$m(T)\ge c'(\log T)^{1/2}$ distinct ordinates
+$\gamma$; distinct on-line zeros have distinct ordinates, and each
+yields the zero $a=\tfrac14+i\gamma/2$ of $\Theta$ by
+Lemma~\ref{lem:inner} (halving ordinates halves window lengths, which
+we absorb into $h_{T}$). Let $y_{T}$ be the window center (after
+halving) and $\varepsilon$ the offsets, so
+$|\varepsilon|\le h_{T}/4\to0$. Finally $y_{T}\to\infty$: any bounded
+region contains finitely many zeros, while $m(T)\to\infty$.
+\end{proof}
+
+\begin{lemma}\label{lem:smallTheta}
+Fix $\delta\in(0,\tfrac14)$ and let $\mu_{n}=\delta+iy_{n}$ with
+$y_{n},m_{n},\varepsilon_{n,j}$ as in Lemma~\ref{lem:clusters}. Then
+\[
+  |\Theta(\mu_{n})|
+  \;\le\;
+  q_{n,\delta}^{\,m_{n}}
+  \longrightarrow 0
+  \qquad (n\to\infty),
+  \qquad
+  q_{n,\delta}^{2}
+  =\frac{(\tfrac14-\delta)^{2}+\max_{j}\varepsilon_{n,j}^{2}}
+        {(\tfrac14+\delta)^{2}}
+  \;\xrightarrow[n\to\infty]{}\;
+  \Bigl(\frac{\tfrac14-\delta}{\tfrac14+\delta}\Bigr)^{2}<1 .
+\]
+\end{lemma}
+
+\begin{proof}
+Let $B_{n}$ be the finite Blaschke product over the cluster zeros
+$a_{n,j}$ (with $b_{a}(s)=\frac{s-a}{s+\bar a}$). Since these are zeros
+of the inner function $\Theta$, we have $\Theta=B_{n}\Theta_{n}$ with
+$\Theta_{n}$ inner, so $|\Theta(\mu_{n})|\le|B_{n}(\mu_{n})|$. For each
+factor,
+\[
+  |b_{a_{n,j}}(\mu_{n})|^{2}
+  =\frac{(\tfrac14-\delta)^{2}+\varepsilon_{n,j}^{2}}
+        {(\tfrac14+\delta)^{2}+\varepsilon_{n,j}^{2}}
+  \le q_{n,\delta}^{2},
+\]
+and there are $m_{n}$ factors. Since $q_{n,\delta}$ is eventually
+bounded by some $q_{\delta}<1$ and $m_{n}\to\infty$, the product tends
+to $0$.
+\end{proof}
+
+\section{Main theorem}
+
+\begin{theorem}\label{thm:main}
+Unconditionally, $\|Z(t)\|=1$ for every $t\ge0$. Equivalently, the
+growth bound of the semigroup $Z$ is
+$\omega_{0}=\lim_{t\to\infty}t^{-1}\log\|Z(t)\|=0$, and
+\[
+  \dist_{H^{\infty}}\bigl(e^{-ts},\,\Theta\Hinf\bigr)=1
+  \qquad\text{for every } t>0 .
+\]
+\end{theorem}
+
+\begin{proof}
+Fix $t>0$ and $\delta\in(0,\tfrac14)$, and let $\mu=\mu_{n}$ as in
+Lemma~\ref{lem:smallTheta}, writing $\theta=\Theta(\mu)$. Using
+$k^{\Theta}_{\mu}=k_{\mu}-\bar\theta\,\Theta k_{\mu}$ and the facts
+(i) of Section~2,
+\[
+  Z(t)^{*}k^{\Theta}_{\mu}
+  = T_{\bar\varphi_{t}}k_{\mu}
+    -\bar\theta\,T_{\bar\varphi_{t}}(\Theta k_{\mu})
+  = e^{-t\bar\mu}\,k_{\mu}
+    -\bar\theta\,T_{\bar\varphi_{t}}(\Theta k_{\mu}),
+\]
+where $\|T_{\bar\varphi_{t}}(\Theta k_{\mu})\|\le
+\|\varphi_{t}\|_{\infty}\|\Theta k_{\mu}\|=\|k_{\mu}\|$ because
+$\|\varphi_{t}\|_{\infty}=1$ and multiplication by the inner function
+$\Theta$ is isometric on $\HH$. Hence
+\[
+  \frac{\|Z(t)^{*}k^{\Theta}_{\mu}\|}{\|k^{\Theta}_{\mu}\|}
+  \;\ge\;
+  \frac{e^{-t\delta}-|\theta|}{\sqrt{1-|\theta|^{2}}}\,
+  \qquad\text{(using } \|k^{\Theta}_{\mu}\|
+    =\sqrt{1-|\theta|^{2}}\,\|k_{\mu}\| \text{)} .
+\]
+By Lemma~\ref{lem:smallTheta}, $|\theta|=|\Theta(\mu_{n})|\to0$ as
+$n\to\infty$, so $\|Z(t)\|=\|Z(t)^{*}\|\ge e^{-t\delta}$. Letting
+$\delta\downarrow0$ gives $\|Z(t)\|\ge1$; the reverse inequality holds
+since $Z(t)$ is a contraction. For a contraction semigroup,
+$\|Z(t_{0})\|<1$ for a single $t_{0}$ would force
+$\omega_{0}\le t_{0}^{-1}\log\|Z(t_{0})\|<0$ by submultiplicativity, so
+$\|Z(t)\|\equiv1$ is equivalent to $\omega_{0}=0$. The distance
+statement follows from Sarason's formula (Section~2, (ii)).
+\end{proof}
+
+\begin{corollary}\label{cor:gap}
+Assume RH. Then every eigenvalue of the generator $A$ has real part
+$-\tfrac14$, while $\omega_{0}(Z)=0$: the spectral bound--growth bound
+gap equals $\tfrac14$, i.e.\ RH does \emph{not} imply uniform
+exponential stability of the scalar model semigroup.
+\end{corollary}
+
+\begin{corollary}\label{cor:LP}
+Let $\widetilde Z(t)$ be any $C_{0}$-semigroup similar to $Z(t)$ with
+similarity constants $c\|f\|\le\|Vf\|\le C\|f\|$ (in particular, any
+unitarily equivalent realization, such as the identification of the
+Lax--Phillips energy semigroup with the scalar compression proposed in
+\cite{Uetake}). Then $\omega_{0}(\widetilde Z)=0$; in particular the
+operator-norm bound \eqref{eq:naive} fails for $\widetilde Z$,
+unconditionally. This does not contradict the Lax--Phillips criterion
+in its per-vector form: for each zero $a$ of $\Theta$ the eigenvector
+$k_{a}$ satisfies $\|Z(t)^{*}k_{a}\|=e^{-t\re a}\|k_{a}\|$, with
+$\re a=\tfrac14$ under RH, and $Z(t)f\to0$ strongly for every
+$f\in\KT$ since $\Theta$ is inner (the model semigroup is of class
+$C_{\cdot0}$).
+\end{corollary}
+
+\begin{remark}\label{rem:extra-factor}
+The full scattering matrix $S_{c}(s)=-\frac{s-1/2}{s+1/2}\Theta(s)$ is
+inner with the same zeros as $\Theta$ plus a simple zero at
+$s=\tfrac12$. Lemmas~\ref{lem:clusters}--\ref{lem:smallTheta} and the
+proof of Theorem~\ref{thm:main} apply verbatim, so the conclusion holds
+for $K_{S_{c}}$ as well.
+\end{remark}
+
+\begin{remark}
+The proof exhibits the mechanism concretely: normalized reproducing
+kernels $k^{\Theta}_{\mu_{n}}/\|k^{\Theta}_{\mu_{n}}\|$ at height
+$y_{n}$ and abscissa $\delta$ are asymptotic eigenvectors of
+$Z(t)^{*}$ with asymptotic eigenvalue modulus $e^{-t\delta}$. Clusters
+of $m_{n}$ zeros violate the Carleson separation condition with
+unbounded multiplicity, so the eigenvectors of $Z(t)^{*}$ do not form a
+Riesz basis and no uniform decay rate can be assembled from the
+eigenvalues. Equivalently, $|\Theta|$ fails to be bounded below on
+every strip $0<\re s<\delta$, so the resolvent of $A$ is unbounded on
+every vertical line $\re\lambda=-\delta$, and $\omega_{0}=0$ also
+follows from the Gearhart--Pr\"uss theorem \cite{GearhartPruess}. In
+the framework of \cite{NabokoRomanov}, the semigroup has a spectral
+singularity at infinity.
+\end{remark}
+
+\begin{remark}
+Only the existence of $\gg T\log T$ zeros on the critical line is used,
+so Selberg's theorem suffices; neither simplicity (Levinson, Conrey)
+nor any information about off-line zeros enters. In particular the
+argument is identical whether RH holds or fails, which is why it can
+refute only the operator-norm \emph{formulation} \eqref{eq:naive} and
+carries no information about RH itself.
+\end{remark}
+
+\begin{thebibliography}{99}
+
+\bibitem{Selberg} A. Selberg,
+\emph{On the zeros of Riemann's zeta-function},
+Skr. Norske Vid. Akad. Oslo I (1942), no. 10, 1--59.
+
+\bibitem{Sarason} D. Sarason,
+\emph{Generalized interpolation in $H^{\infty}$},
+Trans. Amer. Math. Soc. \textbf{127} (1967), 179--203.
+
+\bibitem{LaxPhillips} P. D. Lax and R. S. Phillips,
+\emph{Scattering Theory for Automorphic Functions},
+Annals of Mathematics Studies 87, Princeton Univ. Press, 1976.
+
+\bibitem{FaddeevPavlov} L. D. Faddeev and B. S. Pavlov,
+\emph{Scattering theory and automorphic functions},
+J. Soviet Math. \textbf{3} (1975), 522--548.
+
+\bibitem{LaxTodo} P. D. Lax,
+\emph{[TODO: exact source of equation (54) --- verify citation and
+whether the equation is stated in operator norm or per vector]}.
+
+\bibitem{Uetake} Y. Uetake,
+\emph{[TODO: exact title, journal, year 2007 --- the unitary
+identification of the energy semigroup with the scalar compression]}.
+
+\bibitem{GMR} S. R. Garcia, J. Mashreghi, and W. T. Ross,
+\emph{Introduction to Model Spaces and their Operators},
+Cambridge Univ. Press, 2016.
+
+\bibitem{GearhartPruess} J. Pr\"uss,
+\emph{On the spectrum of $C_{0}$-semigroups},
+Trans. Amer. Math. Soc. \textbf{284} (1984), 847--857.
+
+\bibitem{EngelNagel} K.-J. Engel and R. Nagel,
+\emph{One-Parameter Semigroups for Linear Evolution Equations},
+Springer GTM 194, 2000.
+
+\bibitem{NabokoRomanov} S. Naboko and R. Romanov,
+\emph{Spectral singularities and asymptotics of contractive
+semigroups. I},
+Acta Sci. Math. (Szeged) \textbf{70} (2004), 379--403.
+[TODO: verify volume/pages]
+
+\bibitem{Titchmarsh} E. C. Titchmarsh,
+\emph{The Theory of the Riemann Zeta-Function}, 2nd ed.,
+Oxford Univ. Press, 1986.
+
+\end{thebibliography}
+
+\end{document}

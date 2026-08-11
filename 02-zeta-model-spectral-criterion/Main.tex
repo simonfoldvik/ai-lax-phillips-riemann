@@ -1,0 +1,423 @@
+\documentclass[11pt]{amsart}
+
+% ---------------------------------------------------------------------------
+%  The Lax--Phillips spectral criterion for the Riemann Hypothesis
+%  A complete, self-contained problem specification.
+%
+%  Scope. This file specifies the CORRECT RH-equivalent Lax--Phillips
+%  criterion (spectral-bound form) on the Sz.-Nagy--Foias model space
+%  K_Theta attached to Theta(s) = xi(2s)/xi(-2s). It is the object that
+%  REPLACES the unconditionally false energy-decay form (Lax eq. (54));
+%  see Remark 1. Everything is defined from Hardy-space primitives and the
+%  completed zeta function; two classical operator-theoretic facts are
+%  isolated as Lemmas 1--2 with justification/citation, and the arithmetic
+%  equivalence (Theorem 1) is proved in full.
+%
+%  Compile: pdflatex lax_phillips_rh_criterion.tex
+% ---------------------------------------------------------------------------
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath, amssymb, amsthm, mathtools}
+\usepackage[margin=1in]{geometry}
+\usepackage{microtype}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage[colorlinks=true, linkcolor=blue!50!black, citecolor=blue!50!black, urlcolor=blue!50!black]{hyperref}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}{Proposition}
+\newtheorem{lemma}{Lemma}
+\newtheorem{corollary}{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
+\theoremstyle{remark}
+\newtheorem*{remark}{Remark}
+\newtheorem*{remarks}{Remarks}
+
+\DeclareMathOperator{\dom}{dom}
+\DeclareMathOperator*{\esssup}{ess\,sup}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Cp}{\mathbb{C}_{+}}
+\newcommand{\Ht}{H^{2}(\Cp)}
+\newcommand{\Hi}{H^{\infty}(\Cp)}
+\newcommand{\Kt}{K_{\Theta}}
+\newcommand{\ip}[2]{\langle #1, #2\rangle}
+\newcommand{\norm}[1]{\lVert #1 \rVert}
+\newcommand{\abs}[1]{\lvert #1 \rvert}
+\renewcommand{\Re}{\operatorname{Re}}
+
+\title{\bfseries The Lax--Phillips spectral criterion\\ for the Riemann Hypothesis\\[2pt]
+\large A complete, self-contained problem specification}
+\author{OpenAI Codex}
+\date{20 July 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Let $\xi$ be the completed Riemann zeta function and
+$\Theta(s)=\xi(2s)/\xi(-2s)$ the associated inner function on the right half-plane
+$\Cp=\{\Re s>0\}$. On the Sz.-Nagy--Foias model space $\Kt=\Ht\ominus\Theta\Ht$ the
+compressed translation (Lax--Phillips) semigroup $Z(t)$ has a generator $B$ whose
+spectrum is $\{-\bar\rho/2\}$ over the nontrivial zeros $\rho=\beta+i\gamma$ of $\zeta$.
+We give a fully self-contained specification of the criterion
+\[
+  \mathrm{RH}\iff s(B)\le-\tfrac14 ,
+\]
+where $s(B)=\sup\{\Re\lambda:\lambda\in\sigma(B)\}$ is the spectral bound. Every symbol
+is defined from Hardy-space and analytic-number-theoretic primitives; the classical
+operator-theoretic facts are isolated as two lemmas, and the arithmetic equivalence is
+proved in full. We emphasise (Remark~1) that this is a statement about the
+\emph{location of the spectrum} of $B$, not about $\norm{Z(t)}$: the growth bound is
+$\omega_0(B)=0$ unconditionally, so the energy-decay form $\omega_0(B)\le-\tfrac14$
+(Lax's eq.~(54)) is false independently of RH.
+\end{abstract}
+
+\tableofcontents
+
+% ===========================================================================
+\section{Function-theoretic preliminaries}
+% ===========================================================================
+
+\begin{definition}[Half-plane]\label{def:halfplane}
+$\Cp:=\{s\in\C:\Re s>0\}$ is the open right half-plane, with boundary
+$i\R=\{iy:y\in\R\}$ and closure $\overline{\Cp}=\{\Re s\ge0\}$.
+\end{definition}
+
+\begin{definition}[Hardy space $H^{2}$]\label{def:hardy}
+$\Ht$ is the space of holomorphic functions $f:\Cp\to\C$ with
+\[
+  \norm{f}^{2}:=\sup_{x>0}\frac{1}{2\pi}\int_{-\infty}^{\infty}\abs{f(x+iy)}^{2}\,dy<\infty .
+\]
+For such $f$ the boundary limit $f(iy):=\lim_{x\downarrow0}f(x+iy)$ exists for a.e.\ $y$
+and in $L^{2}(\R,\tfrac{dy}{2\pi})$; the supremum above is attained as $x\downarrow0$, and
+the inner product is
+\[
+  \ip{f}{g}:=\frac{1}{2\pi}\int_{-\infty}^{\infty}f(iy)\,\overline{g(iy)}\,dy .
+\]
+Equivalently, by the Paley--Wiener--Laplace theorem, $f\in\Ht$ iff
+$f(s)=\int_{0}^{\infty}e^{-st}g(t)\,dt$ for some $g\in L^{2}(0,\infty)$, and then
+$\norm{f}=\norm{g}_{L^{2}(0,\infty)}$. Thus $\Ht$ is a Hilbert space.
+\end{definition}
+
+\begin{definition}[Reproducing kernel]\label{def:kernel}
+For $w\in\Cp$,
+\[
+  k_{w}(s):=\frac{1}{\,s+\bar w\,}\in\Ht,\qquad \ip{f}{k_{w}}=f(w)\quad(f\in\Ht).
+\]
+(Indeed $k_{w}$ is the Laplace transform of $t\mapsto e^{-\bar w t}$, and
+$f(w)=\int_{0}^{\infty}e^{-wt}g(t)\,dt=\ip{g}{e^{-\bar w t}}_{L^{2}(0,\infty)}$.)
+\end{definition}
+
+\begin{definition}[Bounded holomorphic multipliers]\label{def:hinf}
+$\Hi$ is the algebra of bounded holomorphic $\varphi:\Cp\to\C$, with
+$\norm{\varphi}_{\infty}:=\sup_{\Cp}\abs{\varphi}=\esssup_{y}\abs{\varphi(iy)}$. Each
+$\varphi\in\Hi$ acts by multiplication $M_{\varphi}f:=\varphi f$ on $\Ht$, a bounded
+operator with $\norm{M_{\varphi}}=\norm{\varphi}_{\infty}$; its adjoint fixes kernels,
+\begin{equation}\label{eq:adjkernel}
+  M_{\varphi}^{*}k_{w}=\overline{\varphi(w)}\,k_{w}\qquad(w\in\Cp),
+\end{equation}
+since $\ip{f}{M_{\varphi}^{*}k_{w}}=\ip{\varphi f}{k_{w}}=\varphi(w)f(w)
+=\ip{f}{\overline{\varphi(w)}k_{w}}$.
+\end{definition}
+
+\begin{definition}[Inner function]\label{def:inner}
+$\Theta\in\Hi$ is \emph{inner} if $\abs{\Theta(iy)}=1$ for a.e.\ $y\in\R$ (equivalently
+$\norm{\Theta}_{\infty}\le1$ with unimodular boundary values). Then
+$\Theta\Ht:=\{\Theta h:h\in\Ht\}$ is a closed subspace of $\Ht$.
+\end{definition}
+
+\begin{definition}[Model space]\label{def:model}
+For inner $\Theta$,
+\[
+  \Kt:=\Ht\ominus\Theta\Ht=\{f\in\Ht:\ip{f}{\Theta h}=0\ \ \forall h\in\Ht\},
+\]
+a closed subspace with orthogonal projection $P_{\Kt}:\Ht\to\Kt$. If $\Theta(a)=0$ for
+some $a\in\Cp$, then $k_{a}\in\Kt$, because
+$\ip{\Theta h}{k_{a}}=\Theta(a)\,h(a)=0$ for all $h\in\Ht$.
+\end{definition}
+
+\begin{definition}[$C_{0}$-semigroup, generator, spectral and growth bounds]\label{def:semigroup}
+A family $\{Z(t)\}_{t\ge0}$ of bounded operators on a Hilbert space $\mathcal H$ is a
+\emph{$C_{0}$-semigroup} if $Z(0)=I$, $Z(t+u)=Z(t)Z(u)$, and $t\mapsto Z(t)x$ is
+continuous for every $x\in\mathcal H$. Its \emph{generator} is
+\[
+  Bx:=\lim_{t\downarrow0}\tfrac1t\bigl(Z(t)x-x\bigr),\qquad
+  \dom B:=\{x:\text{the limit exists}\},
+\]
+and one writes $Z(t)=e^{tB}$. Define the \emph{spectral bound} and \emph{growth bound}
+\[
+  s(B):=\sup\{\Re\lambda:\lambda\in\sigma(B)\},\qquad
+  \omega_{0}(B):=\lim_{t\to\infty}\tfrac1t\log\norm{Z(t)}=\inf_{t>0}\tfrac1t\log\norm{Z(t)}.
+\]
+For every $C_{0}$-semigroup one has $-\infty\le s(B)\le\omega_{0}(B)<\infty$; equality
+holds when $B$ is normal, but may fail for non-normal $B$.
+\end{definition}
+
+% ===========================================================================
+\section{The arithmetic input}
+% ===========================================================================
+
+\begin{definition}[Riemann zeta and completed zeta]\label{def:zeta}
+For $\Re s>1$, $\zeta(s)=\sum_{n\ge1}n^{-s}$, continued meromorphically to $\C$ with a
+single simple pole at $s=1$. The \emph{completed zeta function} is
+\[
+  \xi(s):=\tfrac12\,s(s-1)\,\pi^{-s/2}\,\Gamma\!\bigl(\tfrac s2\bigr)\,\zeta(s).
+\]
+\end{definition}
+
+\noindent\textbf{Classical facts about $\xi$} (all unconditional):
+\begin{enumerate}[label=(\roman*),leftmargin=2.2em]
+  \item $\xi$ is \emph{entire of order $1$};
+  \item \emph{functional equation:} $\xi(s)=\xi(1-s)$;
+  \item \emph{reality:} $\xi(\bar s)=\overline{\xi(s)}$; in particular $\xi$ is real on
+        $\R$, and $\xi(0)=\xi(1)=\tfrac12\neq0$;
+  \item \emph{zeros:} the zeros of $\xi$ are exactly the nontrivial zeros of $\zeta$;
+        every one lies in the open critical strip $0<\Re s<1$, and $\xi$ has no other
+        zeros (the trivial zeros of $\zeta$ and the pole at $s=1$ are cancelled by the
+        $\Gamma$- and $s(s-1)$-factors). Writing a zero as $\rho=\beta+i\gamma$ we have
+        $0<\beta<1$, and the zero set is symmetric under $\rho\mapsto1-\rho$ (by (ii))
+        and under $\rho\mapsto\bar\rho$ (by (iii)).
+\end{enumerate}
+
+\begin{definition}[Riemann Hypothesis]\label{def:rh}
+$\mathrm{RH}$ is the assertion that every zero $\rho=\beta+i\gamma$ of $\xi$ has
+$\beta=\Re\rho=\tfrac12$.
+\end{definition}
+
+% ===========================================================================
+\section{The Lax--Phillips data}
+% ===========================================================================
+
+\begin{definition}[The inner function of $\xi$]\label{def:theta}
+Define
+\begin{equation}\label{eq:theta}
+  \boxed{\ \Theta(s):=\frac{\xi(2s)}{\xi(-2s)}=\frac{\xi(2s)}{\xi(1+2s)}\ }
+  \qquad\Bigl(\text{second form via }\xi(-2s)=\xi(1+2s)\Bigr).
+\end{equation}
+\end{definition}
+
+\begin{lemma}[$\Theta$ is inner; its zeros]\label{lem:inner}
+$\Theta$ is a meromorphic inner function on $\Cp$. Its zeros in $\Cp$ are exactly
+\[
+  \bigl\{\,a=\rho/2:\ \xi(\rho)=0\,\bigr\},\qquad \Re a=\beta/2\in(0,\tfrac12),
+\]
+each with the multiplicity of the corresponding $\rho$; on $\overline{\Cp}$ it has no
+poles and no zeros other than these.
+\end{lemma}
+
+\begin{proof}
+$\Theta$ is a ratio of entire functions, hence meromorphic on $\C$. Zeros arise from
+$\xi(2s)=0\iff2s=\rho\iff s=\rho/2$ (real part $\beta/2>0$); poles from
+$\xi(-2s)=0\iff s=-\rho/2$ (real part $-\beta/2<0$, in $\C\setminus\overline{\Cp}$). No
+zero coincides with a pole, since $\rho/2=-\rho'/2$ would force $\rho=-\rho'$, impossible
+for two zeros with real parts in $(0,1)$; and neither lies on $i\R$ (real parts
+$\pm\beta/2\neq0$). Thus $\Theta$ is holomorphic and zero-free on $i\R$, and holomorphic
+on $\overline{\Cp}$ apart from the zeros $\rho/2$.
+
+\emph{Boundary modulus.} For $s=iy$ we have $-2s=\overline{2s}$, so by reality
+(Definition~\ref{def:zeta}(iii)) $\xi(-2s)=\overline{\xi(2s)}$ and hence
+$\abs{\Theta(iy)}=\abs{\xi(2iy)}/\bigl|\overline{\xi(2iy)}\bigr|=1$
+(the value $2iy$ has real part $0$, so $\xi(2iy)\neq0$).
+
+\emph{Interior bound.} $\Theta$ is of bounded type in $\Cp$ (a quotient of two functions
+of bounded type). Its mean type is nonpositive: from
+$\log\xi(w)=\tfrac w2\log\tfrac{w}{2\pi}-\tfrac w2+O(\log\abs{w})$ one obtains
+\[
+  \log\Theta(s)=\log\xi(2s)-\log\xi(1+2s)=-\tfrac12\log\tfrac{s}{\pi}+O\!\bigl(\tfrac{\log\abs{s}}{\abs{s}}\bigr),
+  \qquad \Theta(s)\sim(\pi/s)^{1/2}\to0
+\]
+as $\Re s\to\infty$; in particular $\lim_{\sigma\to\infty}\sigma^{-1}\log\abs{\Theta(\sigma)}=0$.
+A function of bounded type in $\Cp$ with mean type $\le0$ and boundary modulus $\le1$
+satisfies $\abs{\Theta}\le1$ throughout (Smirnov/Nevanlinna maximum principle). Together
+with $\abs{\Theta}=1$ on $i\R$, this makes $\Theta$ inner. (This is the standard inner
+function attached to $\xi$; cf.\ \cite{nikolski,uetake}.)
+\end{proof}
+
+\begin{definition}[The multiplier semigroup]\label{def:multiplier}
+For $t\ge0$ put
+\[
+  \varphi_{t}(s):=e^{-ts}\in\Hi,\qquad \norm{\varphi_{t}}_{\infty}=1,\qquad
+  \varphi_{t+u}=\varphi_{t}\varphi_{u},\quad \varphi_{0}=1,
+\]
+using $\abs{e^{-ts}}=e^{-t\Re s}\le1$ on $\overline{\Cp}$. Under the Laplace
+identification of Definition~\ref{def:hardy}, $M_{\varphi_{t}}$ is right translation by
+$t$; it is the outgoing-translation form of the unitary evolution group in
+Lax--Phillips scattering \cite{laxphillips,laxphillipsauto}.
+\end{definition}
+
+\begin{definition}[Model / Lax--Phillips scattering semigroup and its generator]\label{def:Z}
+Define the compressed multipliers
+\[
+  A_{t}:=P_{\Kt}\,M_{\varphi_{t}}\big|_{\Kt}:\Kt\to\Kt\qquad(t\ge0),
+\]
+and the \emph{Lax--Phillips semigroup} as the model-side representative of Lax's
+energy-space semigroup under the Fourier--Laplace unitary $\mathcal F$ (his convention
+$\mathcal F\,Z(t)^{*}\mathcal F^{-1}=A_{t}$):
+\begin{equation}\label{eq:Z}
+  \boxed{\ Z(t):=A_{t}^{*}=P_{\Kt}\,M_{\varphi_{t}}^{*}\big|_{\Kt}\ }.
+\end{equation}
+Then $\{Z(t)\}_{t\ge0}$ is a $C_{0}$-semigroup of contractions on $\Kt$
+($\norm{Z(t)}\le\norm{\varphi_{t}}_{\infty}=1$): the map
+$\varphi\mapsto P_{\Kt}M_{\varphi}|_{\Kt}$ is the Sz.-Nagy--Foias $H^{\infty}$-functional
+calculus of the model operator, an algebra homomorphism, so $A_{t}A_{u}=A_{t+u}$ and
+hence $Z(t)Z(u)=Z(t+u)$; strong continuity is that of the model semigroup
+\cite{sznagyfoias,nikolski}. Let $B$ be its generator, $Z(t)=e^{tB}$.
+\end{definition}
+
+\begin{lemma}[Spectrum of the generator]\label{lem:spectrum}
+The reproducing kernels at the zeros of $\Theta$ are eigenvectors of $Z(t)$: for
+$a=\rho/2$,
+\begin{equation}\label{eq:eig}
+  Z(t)\,k_{a}=A_{t}^{*}k_{a}=\overline{\varphi_{t}(a)}\,k_{a}=e^{-t\bar a}\,k_{a},
+  \qquad\text{hence}\qquad B\,k_{a}=-\bar a\,k_{a}=-\tfrac{\bar\rho}{2}\,k_{a}.
+\end{equation}
+Moreover, by the Sz.-Nagy--Foias / Liv\v{s}ic spectral theorem for model operators,
+\[
+  \sigma(B)=\overline{\bigl\{-\tfrac{\bar\rho}{2}:\ \xi(\rho)=0\bigr\}}
+  \ \cup\ \bigl\{\zeta\in i\R:\ \Theta\text{ has no analytic continuation across }\zeta\bigr\}.
+\]
+The second set is empty ($\Theta$ is meromorphic, hence continues analytically across all
+of $i\R$), and the zeros $\rho/2$ do not accumulate at any finite point of $i\R$.
+Consequently, with $\rho=\beta+i\gamma$,
+\begin{equation}\label{eq:sB}
+  \Re\!\bigl(-\tfrac{\bar\rho}{2}\bigr)=-\tfrac{\beta}{2},\qquad
+  \boxed{\ s(B)=\sup_{\rho}\Bigl(-\tfrac{\beta}{2}\Bigr)=-\tfrac12\,\inf_{\rho}\beta\ }.
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+Equation~\eqref{eq:eig} is \eqref{eq:adjkernel} together with $k_{a}\in\Kt$
+(Definition~\ref{def:model}), so $\sigma_{p}(B)\supseteq\{-\bar\rho/2\}$. The spectral
+characterisation of the model generator is classical
+\cite[Part~B]{nikolski}, \cite{sznagyfoias}: the spectrum consists of the zeros of the
+inner function inside $\Cp$ (translated by the generator, $a\mapsto-\bar a$) together
+with its boundary singular support. Here $\Theta$ is a ratio of entire functions, so it
+continues analytically across every point of $i\R$ (its poles lie in
+$\C\setminus\overline{\Cp}$; Lemma~\ref{lem:inner}); and since the zeros $\rho/2$ have
+$\abs{\gamma}\to\infty$ with only finitely many below any height, they have no finite
+accumulation point on $i\R$. Hence $\sigma(B)=\overline{\{-\bar\rho/2\}}$, whose
+supremum of real parts is $\sup_{\rho}(-\beta/2)=-\tfrac12\inf_{\rho}\beta$, giving
+\eqref{eq:sB}.
+\end{proof}
+
+% ===========================================================================
+\section{The criterion equivalent to RH}
+% ===========================================================================
+
+\begin{theorem}[Lax--Phillips spectral criterion for RH]\label{thm:crit}
+Let $B$ be the generator of the Lax--Phillips semigroup $Z(t)$ on $\Kt$
+(Definitions~\ref{def:theta}--\ref{def:Z}). Then
+\[
+  \boxed{\ \mathrm{RH}\quad\Longleftrightarrow\quad s(B)\le-\tfrac14
+          \quad\Longleftrightarrow\quad \sigma(B)\subset\{\Re s\le-\tfrac14\}\ }.
+\]
+Moreover $s(B)\ge-\tfrac14$ unconditionally, so equivalently
+$\mathrm{RH}\iff s(B)=-\tfrac14$: the spectrum of $B$ touches the line
+$\Re s=-\tfrac14$ but never crosses it.
+\end{theorem}
+
+\begin{proof}
+By Lemma~\ref{lem:spectrum}, $s(B)=-\tfrac12\inf_{\rho}\beta$. The set of real parts
+$\{\beta\}$ is nonempty and symmetric about $\tfrac12$ (Definition~\ref{def:zeta}(iv)),
+so $\inf_{\rho}\beta\le\tfrac12$; hence $s(B)\ge-\tfrac14$ unconditionally. Next,
+\[
+  s(B)\le-\tfrac14\iff \inf_{\rho}\beta\ge\tfrac12
+  \iff \text{no zero has }\beta<\tfrac12 .
+\]
+By the $\rho\mapsto1-\rho$ symmetry, ``no zero with $\beta<\tfrac12$'' is equivalent to
+``no zero with $\beta>\tfrac12$'', hence to ``every zero has $\beta=\tfrac12$'', i.e.\ to
+$\mathrm{RH}$ (Definition~\ref{def:rh}). Combining with $s(B)\ge-\tfrac14$ gives the
+final equivalence.
+\end{proof}
+
+\begin{remarks}
+\begin{enumerate}[leftmargin=1.6em]
+\item \textbf{It is a spectral, not a norm, statement.} The constrained quantity is the
+spectral abscissa $s(B)$ (the location of the resonances $-\bar\rho/2$), \emph{not}
+$\norm{Z(t)}$. Unconditionally $\norm{Z(t)}=1$ for every $t>0$: by
+Sarason's theorem \cite{sarason}, $\norm{Z(t)}=\norm{A_{t}}
+=\operatorname{dist}_{H^{\infty}}(\varphi_{t},\Theta\Hi)$, and the nontrivial zeros of
+$\zeta$ cluster densely in imaginary part (Riemann--von Mangoldt density
+$\sim\tfrac{1}{2\pi}\log T$; $\gg T\log T$ of them simple and on the critical line by
+Conrey \cite{conrey}), which forces this distance to equal $1$ (a Montel--Hurwitz
+argument on the clustered interpolation data). Hence the growth bound is
+$\omega_{0}(B)=0$, and the energy-decay form
+\[
+  \lim_{t\to\infty}\tfrac1t\log\norm{Z(t)}\le-\tfrac14\qquad(\text{Lax's eq.~(54)})
+\]
+is \emph{false independently of RH}. Under RH one has the strict gap
+$s(B)=-\tfrac14<0=\omega_{0}(B)$ (Definition~\ref{def:semigroup}), the signature of the
+non-self-adjointness of $B$; identifying $s(B)$ with $\omega_{0}(B)$ is legitimate only
+for normal generators and is exactly the step that fails here.
+
+\item \textbf{Resonance reading.} In the half-plane variable the eigenvalue $-\bar\rho/2$
+has real part $-\beta/2$, so the critical line $\Re\rho=\tfrac12$ maps to the resonance
+line $\Re s=-\tfrac14$. The criterion says: all scattering resonances of the model lie on
+$\Re s=-\tfrac14$.
+
+\item \textbf{Convention-independence.} Replacing $Z(t)=A_{t}^{*}$ by $A_{t}$ replaces
+$\{-\bar\rho/2\}$ by $\{-\rho/2\}$, with identical real parts $-\beta/2$; so $s(B)$ and
+the criterion are unchanged, and $\norm{Z(t)}=\norm{A_{t}}$. The Fourier--Laplace sign is
+fixed by contractivity ($\varphi_{t}=e^{-ts}$ decays on $\Cp$; $e^{+ts}$ is unbounded and
+inadmissible).
+
+\item \textbf{Scope of the identification.} The criterion is stated on the definite
+Hilbert-space model $\Kt$. Whether Lax's energy space $E$ is unitarily---or merely
+boundedly-invertibly (similarly)---equal to this $\Kt$ is the one external input to cite
+(\cite{uetake}). Because $s(B)$ and $\omega_{0}(B)$ are \emph{similarity invariants}, the
+criterion (and the refutation in Remark~1) transfer under any bounded-invertible
+identification; a genuine unitary equivalence additionally gives the exact value
+$\norm{Z(t)}=1$. The residual subtlety is definite-vs.-indefinite: the automorphic
+Lax--Phillips energy form is a Krein/Pontryagin form, and Faddeev--Pavlov regularisation
+modifies it; the specification above pins down the definite scalar realisation.
+\end{enumerate}
+\end{remarks}
+
+% ===========================================================================
+\begin{thebibliography}{9}
+
+\bibitem{conrey}
+J.~B.~Conrey,
+\emph{More than two fifths of the zeros of the Riemann zeta function are on the critical line},
+J.~Reine Angew.\ Math.\ \textbf{399} (1989), 1--26.
+
+\bibitem{laxphillips}
+P.~D.~Lax and R.~S.~Phillips,
+\emph{Scattering Theory},
+Pure and Applied Mathematics \textbf{26}, Academic Press, New York, 1967 (rev.\ ed.\ 1989).
+
+\bibitem{laxphillipsauto}
+P.~D.~Lax and R.~S.~Phillips,
+\emph{Scattering Theory for Automorphic Functions},
+Ann.\ of Math.\ Studies \textbf{87}, Princeton Univ.\ Press, 1976.
+
+\bibitem{nikolski}
+N.~K.~Nikolski,
+\emph{Operators, Functions, and Systems: An Easy Reading}, Vols.\ 1--2,
+Math.\ Surveys and Monographs \textbf{92--93}, Amer.\ Math.\ Soc., 2002.
+
+\bibitem{sarason}
+D.~Sarason,
+\emph{Generalized interpolation in $H^{\infty}$},
+Trans.\ Amer.\ Math.\ Soc.\ \textbf{127} (1967), 179--203.
+
+\bibitem{sznagyfoias}
+B.~Sz.-Nagy, C.~Foias, H.~Bercovici, and L.~K\'erchy,
+\emph{Harmonic Analysis of Operators on Hilbert Space}, 2nd ed.,
+Universitext, Springer, New York, 2010.
+
+\bibitem{uetake}
+Y.~Uetake, (2007).
+Unitary identification of Lax's energy-space scattering semigroup with the compressed
+translation (model) semigroup on $\Kt$.
+\textup{[Reference as given in the audit brief; exact title/venue to be verified before
+any submission.]}
+
+\end{thebibliography}
+
+\end{document}

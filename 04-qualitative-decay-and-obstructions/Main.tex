@@ -1,0 +1,1390 @@
+\documentclass[11pt]{amsart}
+
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb,amsthm,mathtools,mathrsfs}
+\usepackage[margin=1in]{geometry}
+\usepackage{microtype}
+\usepackage{enumitem}
+\usepackage{float}
+\usepackage{xcolor}
+\usepackage[colorlinks=true,
+  linkcolor=blue!45!black,
+  citecolor=blue!45!black,
+  urlcolor=blue!45!black]{hyperref}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{warning}[theorem]{Warning}
+
+\DeclareMathOperator{\Dom}{Dom}
+\DeclareMathOperator{\Ran}{Ran}
+\DeclareMathOperator{\dist}{dist}
+\DeclareMathOperator{\Repart}{Re}
+\DeclareMathOperator{\Impart}{Im}
+\DeclareMathOperator{\spanop}{span}
+\newcommand{\C}{\mathbb C}
+\newcommand{\R}{\mathbb R}
+\newcommand{\Bcal}{\mathcal B}
+\newcommand{\Kcal}{\mathcal K}
+\newcommand{\Hcal}{\mathcal H}
+\newcommand{\Dcal}{\mathcal D}
+\newcommand{\eps}{\varepsilon}
+\newcommand{\ip}[2]{\left\langle #1,#2\right\rangle}
+\newcommand{\norm}[1]{\left\lVert #1\right\rVert}
+\newcommand{\abs}[1]{\left\lvert #1\right\rvert}
+
+\title[Conclusions on the Pavlov--Faddeev criterion]
+{Conclusions from an Attempt at the\\
+Lax--Phillips--Pavlov--Faddeev Regularized Estimate}
+\author{OpenAI Codex}
+\date{11 August 2026}
+\hypersetup{
+  pdftitle={Conclusions from an Attempt at the Lax--Phillips--Pavlov--Faddeev Regularized Estimate},
+  pdfauthor={OpenAI Codex}
+}
+
+\begin{document}
+\raggedbottom
+
+\begin{abstract}
+We report the outcome of an attempt to prove the regularized
+Lax--Phillips--Pavlov--Faddeev estimate associated with the modular
+automorphic wave equation.  The physical identifications can be made precise:
+the final double-primed interaction semigroup is boundedly similar to an
+adjoint compressed-translation model for the pure Blaschke inner function
+$\Theta_0(s)=\xi(2s)/\xi(-2s)$, together with a one-dimensional eigenmode at
+$-1/2$.  We obtain an exact inverse-Laplace tail formula, an $H^\infty$
+quotient formula, a confluent Nevanlinna--Pick criterion retaining all zero
+multiplicities, and equivalent completely positive and Lyapunov formulations.
+For the actual modular semigroup we prove the unconditional qualitative
+decay
+\[
+ \norm{Z(t)(B+iI)^{-1}}\longrightarrow0,
+ \qquad
+ -\frac14\leq\omega_{\mathrm{reg}}(B)\leq0.
+\]
+We also construct pure meromorphic Blaschke models whose entire divisor lies
+on $\Re s=1/4$ but whose regularized exponent is $0$.  Hence critical spectral
+location, innerness, meromorphicity, divisor symmetry, and root completeness
+do not by themselves yield the desired exponent.
+Complete positivity does not remove the obstruction: at the required scale it
+is exactly equivalent to uniform positivity of all confluent Pick matrices.
+The remaining problem is a genuinely uniform, zeta-specific root-synthesis or
+weighted-observability estimate.  No unconditional proof or disproof of the
+target estimate is obtained, and no claim concerning a proof of the Riemann
+hypothesis is made.
+\end{abstract}
+
+\maketitle
+
+\tableofcontents
+
+\section{Objective, verdict, and status of possible novelty}
+
+After fixing the positive energy space, the final double-primed
+Lax--Phillips interaction semigroup $Z(t)$, and its ordinary $C_0$-generator
+$B$, the exact objective was to prove unconditionally
+\begin{equation}\label{eq:objective}
+ \forall\eps>0\ \exists C_\eps<\infty\ \forall t\geq0:
+ \qquad
+ \norm{Z(t)(B+iI)^{-1}}
+ \leq C_\eps e^{(-1/4+\eps)t}.
+\end{equation}
+The norm is the operator norm from the positive energy space to itself.  It is
+equivalently the norm of $Z(t)$ from $\Dom B$, equipped with
+$f\mapsto\norm{(B+iI)f}$, into the energy space.  Neither the
+unregularized norm nor a fixed-vector estimate is used below.
+
+The estimate \eqref{eq:objective} was not proved or disproved.  The
+identification hypotheses in the governing specification were, however,
+verified against the native constructions, and several exact reductions and
+obstructions were obtained.  The strongest conclusions are ordered by their
+mathematical significance rather than by the order in which they were found.
+
+\begin{remark}[Novelty convention]\label{rem:novelty}
+Several elementary consequences below were not located in the sources
+inspected during this project.  We call these \emph{candidate observations}
+and highlight them explicitly, but make no priority or originality claim.
+The main candidates are Theorem~\ref{thm:abstract-counterexample},
+Theorem~\ref{thm:qualitative-decay},
+Proposition~\ref{prop:finite-dimension}, and
+Theorem~\ref{thm:L1-divergence}, together with their zeta-model synthesis.
+A dedicated literature search would be required before any novelty claim.
+\end{remark}
+
+\section{A critical-line model can have regularized exponent zero}
+\label{sec:counterexample}
+
+The following abstract example is the sharpest obstruction found.  It shows
+that even placing every model eigenvalue on the critical spectral line does
+not control the regularized exponent without quantitative information on root
+blocks and their synthesis.
+
+Let $\Theta$ be a pure inner function on $\C_+=\{s:\Repart s>0\}$ and put
+\[
+ K_\Theta=H^2(\C_+)\ominus\Theta H^2(\C_+),
+ \qquad
+ S_\Theta(t)=
+ \left(P_{K_\Theta}M_{e^{-ts}}\big|_{K_\Theta}\right)^*.
+\]
+Write $B_\Theta$ for the ordinary generator of $S_\Theta(t)$.
+
+\begin{theorem}[Critical-line Blaschke counterexample]
+\label{thm:abstract-counterexample}
+There exists a pure meromorphic Blaschke product $\Theta$ such that:
+\begin{enumerate}[label=\textup{(\roman*)}]
+ \item every zero of $\Theta$ lies on $\Repart a=1/4$, and the divisor is
+ invariant under conjugation and under $a\mapsto1/2-\bar a$;
+ \item $\Theta$ has zero mean type and no finite boundary singularity;
+ \item $S_\Theta(t)$ is a contraction semigroup, $-i\in\rho(B_\Theta)$,
+ and the generalized root kernels are complete;
+ \item nevertheless,
+ \[
+  \limsup_{t\to\infty}\frac1t
+  \log\norm{S_\Theta(t)(B_\Theta+iI)^{-1}}=0.
+ \]
+\end{enumerate}
+Thus critical-line spectral location, pure innerness, meromorphicity, and the
+centered divisor symmetries do not imply the exponent $-1/4$.
+\end{theorem}
+
+\begin{proof}
+Put $\delta=1/4$, $k_n=n$ for $n\geq2$, and $Y_n=e^{\sqrt n}$.  Let
+$\Theta$ be the pure
+half-plane Blaschke product whose zeros are
+\[
+ a_n^\pm=\delta\pm iY_n,
+\]
+each with multiplicity $k_n+1$.  The Blaschke sum converges because
+\[
+ \sum_n\frac{2(k_n+1)\delta}{1+\delta^2+Y_n^2}<\infty.
+\]
+There is no exponential or finite-boundary singular factor by construction,
+and there is no finite boundary accumulation.  The divisor has both stated
+symmetries.
+
+The zero-kernel derivatives are complete in $K_\Theta$: if
+$F\in K_\Theta$ is orthogonal to every derivative kernel, then $F$ vanishes
+on the full zero divisor, so $F/\Theta\in H^2(\C_+)$.  Hence
+$F\in K_\Theta\cap\Theta H^2=\{0\}$.  The standard model-spectrum theorem
+\cite{Nikolski2002} says that its finite generator spectral points are the
+zero-derived eigenvalues together with finite boundary singularities.
+There are no boundary singularities here and no zero corresponds to $-i$;
+therefore $-i\in\rho(B_\Theta)$.
+
+Under the unitary Laplace transform, $S_\Theta(t)$ becomes left translation
+on a closed subspace $\mathscr K_\Theta\subset L^2(0,\infty)$ and
+$B_\Theta=d/dx$.  Since $a_n^+$ has multiplicity $k_n+1$, the normalized
+root vector
+\[
+ f_n(x)=c_nx^{k_n}e^{-\delta x}e^{iY_nx},
+ \qquad
+ c_n^2=\frac{(2\delta)^{2k_n+1}}{(2k_n)!},
+\]
+belongs to $\mathscr K_\Theta\cap W^{1,2}(0,\infty)$ and has norm one.
+Direct calculation gives
+\begin{equation}\label{eq:counter-graph}
+ \norm{(B_\Theta+iI)f_n}_2^2
+ =(Y_n+1)^2+\frac{\delta^2}{2k_n-1}.
+\end{equation}
+The probability density $\abs{f_n(x)}^2dx$ is gamma with shape $2k_n+1$
+and rate $2\delta$.  At
+\[
+ t_n=\frac{2k_n+1}{4\delta},
+\]
+Chebyshev's inequality yields
+\begin{equation}\label{eq:counter-tail}
+ \int_{t_n}^\infty\abs{f_n(x)}^2\,dx
+ \geq1-\frac4{2k_n+1}.
+\end{equation}
+Equations \eqref{eq:counter-graph}--\eqref{eq:counter-tail} imply
+\[
+ \norm{S_\Theta(t_n)(B_\Theta+iI)^{-1}}
+ \geq
+ \frac{\sqrt{1-4/(2k_n+1)}}
+ {\sqrt{(Y_n+1)^2+\delta^2/(2k_n-1)}}.
+\]
+Since $\log Y_n=\sqrt n=o(t_n)$, the logarithmic limsup is at least zero.
+Contractivity and boundedness of the fixed resolvent give the reverse
+inequality.
+
+The meromorphic model has no finite boundary spectrum.  None of the stated
+qualitative properties changes the calculation above.
+\end{proof}
+
+\begin{remark}[Scope of the counterexample]
+This is not the zeta inner function and is not a counterexample to RH or to
+the Pavlov--Faddeev theorem.  Its purpose is logical: no argument using only
+innerness, meromorphic continuation, functional-equation-type divisor
+symmetry, completeness, and critical spectral location can prove
+\eqref{eq:objective}.  The zeta case must use arithmetic information not
+present in the abstract model axioms.
+\end{remark}
+
+\section{The strongest unconditional result for the modular semigroup}
+\label{sec:qualitative}
+
+The exact Uetake model and its compact-resolvent theorem yield a genuine
+operator-norm conclusion, although without a negative exponential rate.
+
+\begin{theorem}[Qualitative regularized decay]
+\label{thm:qualitative-decay}
+For the final double-primed modular interaction semigroup and its ordinary
+generator,
+\begin{equation}\label{eq:qualitative-decay}
+ \norm{Z(t)(B+iI)^{-1}}\longrightarrow0
+ \qquad(t\to\infty).
+\end{equation}
+Moreover $t\mapsto\norm{Z(t)(B+iI)^{-1}}$ is nonincreasing, and
+\begin{equation}\label{eq:omega-bracket}
+ -\frac14\leq\omega_{\mathrm{reg}}(B)\leq0.
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+Uetake proves that the reduced generator has meromorphic resolvent, that its
+generalized root vectors have dense finite linear span, and that every finite
+spectral point is a zeta-derived root eigenvalue; see
+\cite[Thms.~4.2 and 4.4]{Uetake2007}.  Every such eigenvalue has strictly
+negative real part.  On a root vector the semigroup orbit is a polynomial in
+$t$ times $e^{\lambda t}$, hence tends to zero.  Contractivity extends strong
+stability from the dense root span to the whole reduced model.  The full
+model adds only the mode $e^{-t/2}$, so the physical semigroup is strongly
+stable as well.
+
+The generator resolvent is compact by the Lax--Phillips compact-resolvent
+theorem, reported in \cite[p.~100]{Uetake2007}; see also
+\cite[Thm.~6.17]{LaxPhillips1976}.  Uniformly bounded strong convergence is
+uniform on relatively compact sets.  Applying it to the image of the unit
+ball under $(B+iI)^{-1}$ proves \eqref{eq:qualitative-decay}.
+
+Since the resolvent commutes with $Z(t)$ and $Z(t)$ is contractive,
+\[
+ \norm{Z(t+s)(B+iI)^{-1}}
+ \leq\norm{Z(t)(B+iI)^{-1}},
+\]
+which proves monotonicity and the upper bound in
+\eqref{eq:omega-bracket}.  A known critical-line zero gives an actual
+eigenvalue with real part $-1/4$, and the fixed-resolvent eigenvector test
+gives the lower bound.
+\end{proof}
+
+\begin{remark}
+Norm convergence to zero is strictly stronger than contractive boundedness
+and is not a consequence of spectral location alone.  It supplies no
+negative exponential exponent: even normal strongly stable semigroups with
+compact resolvent can have regularized decay only of order $1/t$.
+\end{remark}
+
+\section{Exact scalar reductions: tails, quotient norms, and Pick matrices}
+\label{sec:exact-reductions}
+
+Let $\Theta$ be a pure Blaschke inner function on $\C_+$, let
+\[
+ A_t=P_{K_\Theta}M_{e^{-ts}}\big|_{K_\Theta},
+\]
+and let $B_\Theta$ generate $A_t^*$.  The results in this section are standard
+model-space consequences, but their simultaneous application to the
+regularized zeta model is central to locating the exact obstruction.
+
+\begin{proposition}[Graph-tail formula]
+\label{prop:tail-formula}
+Let $\mathcal L:L^2(0,\infty)\to H^2(\C_+)$ be the unitary Laplace transform
+and put $\mathscr K_\Theta=\mathcal L^{-1}K_\Theta$.  Assume
+$-i\in\rho(B_\Theta)$.  Then
+\[
+ \mathcal L^{-1}A_t^*\mathcal L f(x)=f(x+t),
+ \qquad
+ \Dom B_\Theta=\mathscr K_\Theta\cap W^{1,2}(0,\infty),
+ \qquad B_\Theta f=f',
+\]
+and
+\begin{equation}\label{eq:tail-formula}
+ \norm{A_t^*(B_\Theta+iI)^{-1}}^2
+ =
+ \sup_{0\neq f\in\mathscr K_\Theta\cap W^{1,2}}
+ \frac{\displaystyle\int_t^\infty\abs{f(x)}^2\,dx}
+ {\displaystyle\int_0^\infty\abs{f'(x)+if(x)}^2\,dx}.
+\end{equation}
+\end{proposition}
+
+\begin{proof}
+Multiplication by $e^{-ts}$ corresponds to the right shift under the Laplace
+transform, so the adjoint is left translation.  The generator and its domain
+follow from the standard shift generator.  Substituting
+$h=(B_\Theta+iI)f$ gives \eqref{eq:tail-formula}.
+\end{proof}
+
+Assume that $\Theta$ continues holomorphically and nonvanishingly through
+$-i$, and set
+\begin{equation}\label{eq:r-symbol}
+ r(s)=\frac{\Theta(s)/\Theta(-i)-1}{s+i},
+ \qquad q_t(s)=e^{-ts}r(s).
+\end{equation}
+The apparent singularity at $-i$ is removable.  Up to a unimodular scalar,
+$r$ is the boundary model kernel $-k_{-i}^{\Theta}$.
+
+\begin{proposition}[$H^\infty$ quotient formula]
+\label{prop:quotient-formula}
+With the preceding notation,
+\begin{equation}\label{eq:quotient-formula}
+ \norm{A_t^*(B_\Theta+iI)^{-1}}
+ =\norm{P_{K_\Theta}M_{q_t}|_{K_\Theta}}
+ =\dist_{H^\infty}(q_t,\Theta H^\infty).
+\end{equation}
+\end{proposition}
+
+\begin{proof}
+Modulo $\Theta H^2$, the identity
+\[
+ (-s-i)r(s)=1-\frac{\Theta(s)}{\Theta(-i)}
+\]
+identifies the compressed multiplier by $r$ with the appropriate adjoint
+resolvent.  Taking adjoints and commuting the analytic compressed multipliers
+gives the first equality.  The second is Sarason's commutant-lifting theorem
+\cite{Sarason1967}.
+\end{proof}
+
+Let $a_j$ range over the zeros of $\Theta$, with multiplicities $m_j$, and
+define
+\[
+ \psi_t(s)=-\frac{e^{-ts}}{s+i}.
+\]
+At every zero of $\Theta$, the functions $q_t$ and $\psi_t$ have identical
+jets through order $m_j-1$.
+
+\begin{theorem}[Confluent Pick criterion]
+\label{thm:confluent-pick}
+For $C>0$, the following are equivalent:
+\begin{enumerate}[label=\textup{(\roman*)}]
+ \item $\norm{A_t^*(B_\Theta+iI)^{-1}}\leq C$;
+ \item there exists $F\in H^\infty(\C_+)$ with $\norm F_\infty\leq C$ and
+ \[
+  F^{(p)}(a_j)=\psi_t^{(p)}(a_j),
+  \qquad 0\leq p<m_j;
+ \]
+ \item for every finite collection of zero blocks, the confluent Pick matrix
+ \begin{equation}\label{eq:confluent-pick}
+ \left[
+ \left.
+ \frac1{p!q!}\partial_s^p\partial_{\bar z}^{q}
+ \frac{C^2-\psi_t(s)\overline{\psi_t(z)}}{s+\bar z}
+ \right|_{s=a_j,z=a_k}
+ \right]_{(j,p),(k,q)}
+ \end{equation}
+ is positive semidefinite.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+Proposition~\ref{prop:quotient-formula} and the pure Blaschke factorization
+show that $F-q_t\in\Theta H^\infty$ exactly when the displayed zero jets
+agree.  The equivalence with \eqref{eq:confluent-pick} is the confluent
+half-plane Nevanlinna--Pick theorem.  Passing from every finite problem to a
+global interpolant uses a normal-family diagonal argument.  See
+\cite{AglerMcCarthy2000} for the complete Pick framework.
+\end{proof}
+
+For simple zeros, \eqref{eq:confluent-pick} reduces to
+\begin{equation}\label{eq:simple-pick}
+ \left[
+  \frac{C^2-w_t(a_j)\overline{w_t(a_k)}}
+       {a_j+\bar a_k}
+ \right]_{j,k}\succeq0,
+ \qquad
+ w_t(a)=-\frac{e^{-ta}}{a+i}.
+\end{equation}
+The one-point minor already forces
+\begin{equation}\label{eq:one-point}
+ C\geq\frac{e^{-t\Repart a}}{\abs{a+i}}.
+\end{equation}
+Consequently the desired choice
+$C=C_\eps e^{(-1/4+\eps)t}$ for every $\eps>0$ forces
+$\Repart a\geq1/4$ for every zero.  In the zeta model the reflected zero
+symmetry then forces equality.  Thus even the diagonal Pick conditions
+already contain RH; the off-diagonal and confluent conditions contain the
+additional nonnormal uniformity.
+
+\section{What complete positivity does and does not provide}
+\label{sec:CP}
+
+The Pick matrices admit an exact completely positive formulation.  This
+answers the natural operator-algebra question, but also exposes its
+circularity at the target scale.
+
+Put
+\[
+ D_t=A_t^*(B_\Theta+iI)^{-1}.
+\]
+On a zero kernel $k_a$,
+\[
+ D_tk_a=\overline{w_t(a)}k_a,
+ \qquad w_t(a)=-\frac{e^{-ta}}{a+i},
+\]
+and on derivative kernels it acts by the corresponding lower-triangular jet
+matrix.  Thus Theorem~\ref{thm:confluent-pick} is equivalently the assertion
+that this data operator has norm at most $C$ on every finite jet span, with a
+bound independent of that span.
+
+\begin{proposition}[Exact UCP reformulation]
+\label{prop:UCP}
+Assume $K_\Theta$ is infinite dimensional, as in the zeta model.
+Let $\widetilde{\Kcal}(K_\Theta)=\Kcal(K_\Theta)+\C I$ be the unitization of
+the compact operators.  For $C>0$ define
+\[
+ \Psi_{t,C}(K+\lambda I)=C^{-2}D_t^*KD_t+\lambda I.
+\]
+Then
+\[
+ \Psi_{t,C}\text{ is unital completely positive}
+ \quad\Longleftrightarrow\quad
+ \norm{D_t}\leq C.
+\]
+In particular, existence of these UCP maps for
+$C=C_\eps e^{(-1/4+\eps)t}$ is exactly the desired regularized estimate.
+\end{proposition}
+
+\begin{proof}
+If $Q=I-C^{-2}D_t^*D_t\geq0$ and
+$\chi(K+\lambda I)=\lambda$, then
+\[
+ \Psi_{t,C}(A)=C^{-2}D_t^*AD_t+\chi(A)Q
+\]
+is a sum of completely positive maps and is unital.  Conversely, if
+$P_n\uparrow I$ is a finite-rank approximate identity, positivity gives
+\[
+ 0\leq\Psi_{t,C}(I-P_n)=I-C^{-2}D_t^*P_nD_t.
+\]
+Taking strong limits yields $D_t^*D_t\leq C^2I$.
+\end{proof}
+
+Stinespring and Arveson extension therefore do not generate the missing
+estimate.  They represent or extend a map after its positivity has been
+proved.  In the present problem, subunitality of the one-Kraus map
+$X\mapsto D_t^*XD_t$ is precisely the desired norm inequality.  See
+\cite{Arveson1969}; the more general operator-argument interpolation theorem
+of Muhly--Solel has the same logical form \cite{MuhlySolel2004}.
+
+There is nevertheless an unconditional CP factorization, but only at
+exponent zero.  Let $r,q_t$ be as in \eqref{eq:r-symbol} and
+$R_0=\norm r_\infty$.  On all of $\C_+$,
+\begin{align}\label{eq:CP-zero-rate}
+ \frac{R_0^2-q_t(s)\overline{q_t(z)}}{s+\bar z}
+={}&
+ \frac{R_0^2-r(s)\overline{r(z)}}{s+\bar z}
+ \\
+ &+r(s)\overline{r(z)}
+   \int_0^t e^{-u(s+\bar z)}\,du.\notag
+\end{align}
+The first summand is a de Branges--Rovnyak kernel and the second is a Gram
+kernel.  Hence every confluent restriction is positive and
+\[
+ \norm{D_t}\leq\norm r_\infty.
+\]
+Trying to extract $e^{-t/4}$ termwise fails: on the critical line the
+remaining phase diagonal is not contractive in the nonorthogonal Cauchy-kernel
+Gram metric.  Complete positivity retains positivity but loses exactly the
+oscillatory cancellation needed for decay.
+
+\section{Fixed finite root dimension is harmless; uniform dimension is not}
+\label{sec:finite-dimension}
+
+The following candidate observation isolates the infinite-dimensional nature
+of the obstruction.  It also shows why checking finitely many ordinary Pick
+matrices, or only close pairs, cannot settle the estimate.
+
+\begin{proposition}[Uniform estimate at fixed total jet dimension]
+\label{prop:finite-dimension}
+Let $V\subset\Dom B$ be a subspace of dimension $n$ for a contraction
+semigroup, assume $B(V)\subset V$, and suppose
+\[
+ \sigma(B|_V)\subset\{-x+i\eta:\eta\in\R\}
+\]
+for some $x>0$.  For every $\eps>0$ there is a constant
+$C_{n,\eps,x}$, independent of spectral heights, gaps, and the Jordan
+configuration inside $V$, such that
+\[
+ \norm{e^{tB|_V}(B|_V+iI)^{-1}}
+ \leq C_{n,\eps,x}e^{(-x+\eps)t},
+ \qquad t\geq0.
+\]
+Consequently every critical Pick/Hermite test of a fixed total jet dimension
+passes with an $\eps$-loss.  The constant is not uniform as $n\to\infty$.
+\end{proposition}
+
+\begin{proof}
+In an orthonormal Schur basis,
+\[
+ B|_V=-xI+iD+U,
+\]
+where $D$ is real diagonal and $U$ is strictly upper triangular.
+Dissipativity gives $\abs{U_{jk}}\leq2x$ from each two-dimensional principal
+minor of $B+B^*\leq0$, and hence $\norm U\leq Cxn$.  In the interaction
+picture $U(s)=e^{-isD}Ue^{isD}$ remains strictly upper triangular.  Every
+product of $n$ such matrices vanishes, so the Dyson series terminates:
+\[
+\norm{e^{tB|_V}}
+ \leq e^{-xt}\sum_{k=0}^{n-1}\frac{(Cxn t)^k}{k!}.
+\]
+Put $D_0=\operatorname{diag}(-x+i(\eta_j+1))$.  Since
+$B|_V+iI=D_0+U$ and $D_0^{-1}U$ is strictly upper triangular,
+\[
+ (B|_V+iI)^{-1}
+ =\sum_{k=0}^{n-1}(-D_0^{-1}U)^kD_0^{-1},
+ \qquad
+ \norm{(B|_V+iI)^{-1}}
+ \leq\frac1x\sum_{k=0}^{n-1}(Cn)^k.
+\]
+Multiply the two estimates and absorb the fixed polynomial into
+$e^{\eps t}$.
+\end{proof}
+
+For $n=2$ this yields, uniformly as two critical ordinates coalesce and also
+for a length-two Jordan block,
+\[
+ \norm{e^{tB|_V}(B|_V+iI)^{-1}}
+ \leq C e^{-xt}(1+t).
+\]
+Thus pairwise small gaps cause only polynomial transient amplification.  The
+actual problem is a bound uniform over arbitrarily large and possibly
+nonlocal zero families, together with unbounded jet orders.
+
+\section{Weighted observability, Lyapunov operators, and square functions}
+\label{sec:Lyapunov}
+
+Complete positivity becomes useful conceptually when organized as a weighted
+observability problem.  It still gives an equivalent certificate rather than
+an independent proof.
+
+Let $T(t)$ be a $C_0$ contraction semigroup with generator $B$, and let
+$R\in\Bcal(\Hcal)$ commute with $T(t)$.  In the application one may take
+$R=(B+iI)^{-1}$ or any other fixed generator resolvent, since fixed resolvent
+points give equivalent exponential exponents.
+
+\begin{theorem}[Weighted Gramian and regularized decay]
+\label{thm:weighted-Gramian}
+Fix $\beta>0$.  The following are equivalent:
+\begin{enumerate}[label=\textup{(\roman*)}]
+ \item there is $M_\beta<\infty$ such that
+ \begin{equation}\label{eq:weighted-observability}
+  \int_0^\infty e^{2\beta t}\norm{T(t)Rh}^2\,dt
+  \leq M_\beta\norm h^2
+  \qquad(h\in\Hcal);
+ \end{equation}
+ \item there is a bounded positive operator $P_\beta$ satisfying, weakly on
+ $\Dom B\times\Dom B$,
+ \begin{equation}\label{eq:weak-Lyapunov}
+  \ip{P_\beta Bx}{y}+\ip{P_\beta x}{By}
+  +2\beta\ip{P_\beta x}{y}
+  =-\ip{Rx}{Ry}.
+ \end{equation}
+\end{enumerate}
+Either condition implies
+\begin{equation}\label{eq:Gramian-pointwise}
+ \norm{T(t)R}\leq C_\beta e^{-\beta t}.
+\end{equation}
+Conversely, a pointwise estimate with exponent $-\beta'$ for some
+$\beta'>\beta$ implies \eqref{eq:weighted-observability}.  Hence the full
+family \eqref{eq:objective} is equivalent to existence of such bounded
+$P_\beta$ for every $0<\beta<1/4$.
+\end{theorem}
+
+\begin{proof}
+From \eqref{eq:weighted-observability}, define the bounded positive Gramian
+weakly by
+\[
+ P_\beta=\int_0^\infty e^{2\beta t}
+ T(t)^*R^*RT(t)\,dt.
+\]
+Differentiating its shifted weak form at zero gives
+\eqref{eq:weak-Lyapunov}.  Conversely, integrate the derivative of
+$e^{2\beta t}\ip{P_\beta T(t)x}{T(t)x}$ and use positivity.
+
+Because $R$ commutes with $T(t)$ and $T(t)$ is contractive, the positive
+operators $(T(t)R)^*T(t)R$ decrease in the Loewner order.  Integrating over
+$[t-1,t]$ gives
+\[
+ P_\beta\succeq e^{2\beta t}
+ \left(\int_0^1e^{-2\beta u}\,du\right)(T(t)R)^*T(t)R,
+\]
+which proves \eqref{eq:Gramian-pointwise}.  The converse follows by direct
+integration with the strict margin $\beta'>\beta$.  For the epsilon family,
+choose $\beta<\beta'<1/4$ in one direction and
+$\beta=1/4-\eps$ in the other when $0<\eps<1/4$.  For
+$\eps\geq1/4$, contractivity and boundedness of $R$ give the required
+nondecaying or growing bound directly.
+\end{proof}
+
+The equality \eqref{eq:weak-Lyapunov} is only a quadratic-form statement; no
+claim that $P_\beta\Dom B\subset\Dom B^*$ is made.  Similarly,
+$X\mapsto T(t)^*XT(t)$ is CP and subunital but need not be norm continuous on
+$\Bcal(\Hcal)$.
+
+The outgoing translation representation gives an especially transparent
+version.  If $\mathcal T_+\Kcal\subset L^2(\R_-)$ and
+$g=\mathcal T_+f$, then
+\begin{equation}\label{eq:outgoing-tail}
+ \norm{Z(t)f}^2=\int_{-\infty}^{-t}\abs{g(r)}^2\,dr
+\end{equation}
+and Fubini gives
+\begin{equation}\label{eq:outgoing-weight}
+ \int_0^\infty e^{2\beta t}\norm{Z(t)f}^2\,dt
+ =\frac1{2\beta}\int_{-\infty}^0
+ \bigl(e^{-2\beta r}-1\bigr)\abs{g(r)}^2\,dr.
+\end{equation}
+Thus the missing estimate is precisely boundedness, after the fixed
+resolvent, of the exponentially weighted outgoing map
+\[
+ h\longmapsto e^{-\beta r}\mathcal T_+Rh
+ \quad\text{into }L^2(\R_-),
+ \qquad \beta<\frac14.
+\]
+By vector-valued Paley--Wiener, this is equivalently a vertical-line
+$L^2$ resolvent estimate for the regularized product
+$R(z,B)R$.  It is not an absolute $L^1$ operator-norm contour estimate.
+
+\section{Functional-equation symmetry gives a Krein form, not a positive metric}
+\label{sec:detailed-balance}
+
+The zero symmetry $a\mapsto1/2-\bar a$ suggests shifting the generator by
+$1/4$ and seeking detailed balance.  The idea fails for a structural reason.
+
+\begin{proposition}[Positive detailed balance annihilates off-critical roots]
+\label{prop:DB-annihilates}
+Suppose $P\in\Bcal(\Kcal)$ is nonnegative and satisfies the weak identity
+\begin{equation}\label{eq:detailed-balance}
+ B^*P+PB=-\frac12P,
+\end{equation}
+equivalently
+\[
+ Z(t)^*PZ(t)=e^{-t/2}P.
+\]
+Then $P$ annihilates every root space with
+$\Repart\lambda\neq-1/4$.  On a critical Jordan space it annihilates the
+nilpotent range.  Consequently an injective positive solution would force all
+zeta roots to be critical and semisimple; in the scalar model it would imply
+RH together with simplicity of every zero.
+\end{proposition}
+
+\begin{proof}
+If $Bv=\lambda v$, taking the quadratic form of
+\eqref{eq:detailed-balance} on $v$ gives
+\[
+ \left(2\Repart\lambda+\frac12\right)\ip{Pv}{v}=0.
+\]
+For an off-critical eigenvalue, positivity gives $Pv=0$.  Induction along a
+Jordan chain proves the first assertion.  On a critical block, the induced
+nilpotent operator on the quotient by $\ker P$ would be skew-adjoint in a
+positive metric, hence zero.
+\end{proof}
+
+Bare existence of such a $P$ is uninformative: $P=0$ works, and a known
+critical adjoint eigenvector produces a nonzero rank-one solution that simply
+annihilates all other dynamics.  A bounded coercive solution would imply the
+strictly stronger unregularized estimate
+\[
+ \norm{Z(t)}\leq C e^{-t/4},
+\]
+which is not needed for the regularized criterion.
+
+On an off-critical reflected eigenpair, every nondegenerate Hermitian solution
+of the centered invariance equation has, in root coordinates, the form
+\begin{equation}\label{eq:Krein-pair}
+ \begin{pmatrix}0&c\\ \bar c&0\end{pmatrix},
+\end{equation}
+with signature $(1,1)$.  For paired Jordan blocks the corresponding
+anti-diagonal form has signature $(m,m)$.  Thus the functional equation
+naturally supplies a Krein pairing whose cross term decays at the centered
+rate, not a positive Hilbert metric.  Replacing the form by its absolute value
+or square makes it positive but destroys the shifted intertwining relation.
+
+There is a canonical positive substitute in the time model:
+\[
+ Q_\beta(f,g)=\int_0^\infty e^{2\beta x}f(x)\overline{g(x)}\,dx.
+\]
+On its natural domain,
+\begin{equation}\label{eq:positive-flux-form}
+ Q_\beta((B+\beta)f,g)+Q_\beta(f,(B+\beta)g)
+ =-f(0)\overline{g(0)}.
+\end{equation}
+The negative boundary term is outgoing flux.  Graph boundedness of $Q_\beta$
+for every $\beta<1/4$ is exactly the weighted formulation of
+\eqref{eq:objective}; the endpoint $\beta=1/4$ excludes critical
+eigenfunctions and is strictly too strong.  Positivity of the form is
+automatic, while its required graph boundedness is the unsolved estimate.
+
+\section{Absolute operator-norm contour integration is impossible}
+\label{sec:L1-divergence}
+
+The specification correctly warned that taking the operator norm before a
+resolvent contour integral loses too much cancellation.  In the modular
+model this warning can be upgraded to a theorem.
+
+\begin{theorem}[Divergence of the absolute resolvent contour]
+\label{thm:L1-divergence}
+Fix $\eps>0$, put $\alpha=-1/4+\eps$, and let
+$\lambda_0\in\rho(B)$.  If the vertical line
+$\alpha+i\R$ is contained in $\rho(B)$, then
+\begin{equation}\label{eq:L1-divergence}
+ \int_{\R}
+ \norm{R(\alpha+i\tau,B)^2R(\lambda_0,B)}\,d\tau=\infty.
+\end{equation}
+If the line meets the spectrum, the proposed contour is already obstructed
+by a spectral singularity, which is a pole in the verified meromorphic
+modular model.  Thus no proof of \eqref{eq:objective} can be obtained by first
+taking the $\Bcal(\Kcal)$-norm and then estimating this contour absolutely.
+\end{theorem}
+
+\begin{proof}
+Let $\lambda_n=-1/4+i\eta_n$ be a simple critical eigenvalue and let $v_n$
+be a corresponding unit eigenvector.  The verified model correspondence
+gives such eigenvalues from simple critical zeta zeros.  Applying the three
+resolvents to $v_n$ gives
+\begin{equation}\label{eq:L1-eigen-lower}
+ \norm{R(\alpha+i\tau,B)^2R(\lambda_0,B)}
+ \geq
+ \frac1{\bigl(\eps^2+(\tau-\eta_n)^2\bigr)
+              \abs{\lambda_0-\lambda_n}}.
+\end{equation}
+An unconditional positive proportion of zeta zeros are simple and lie on the
+critical line; Heath--Brown's theorem already suffices
+\cite{HeathBrown1979}.  Combining this with the Riemann--von Mangoldt formula
+and the standard $O(\log T)$ bound for the number of zeros in an interval of
+fixed length, choose one fixed, sufficiently large $q>1$.  In each large
+geometric block $[T,qT]$ one may select at least $cT$ such ordinates
+$\eta_n=\gamma_n/2$ with a fixed mutual separation.  Trimming the endpoints,
+and using alternate blocks if necessary, makes all selected intervals
+disjoint.
+Integrate \eqref{eq:L1-eigen-lower} over disjoint fixed-radius intervals
+centered at the selected ordinates.  Since
+$\abs{\lambda_0-\lambda_n}\ll T$ in the block, every interval contributes
+$\gg T^{-1}$.  Each geometric block therefore contributes a positive
+constant, and summing the blocks proves \eqref{eq:L1-divergence}.
+\end{proof}
+
+The failure is specific to absolute $L^1$ control of the operator norm.  It
+does not rule out vector-valued $L^2$ contour or square-function methods.  In
+fact, Section~\ref{sec:Lyapunov} shows that an $L^2$ estimate with the
+regularizer retained is exactly the weighted-observability formulation of
+the desired bound.
+
+\section{Verification of the identification chain}
+\label{sec:identifications}
+
+This section records which historical and analytic identifications were
+actually checked.  They are not consequences of formal similarity of
+scattering coefficients; the precise spaces, factors, signs, and
+multiplicities matter.
+
+\subsection{The reduced zeta factor is unconditionally pure inner}
+
+We use the entire completed zeta function
+\[
+ \xi(z)=\frac12z(z-1)\pi^{-z/2}\Gamma(z/2)\zeta(z)
+\]
+and set
+\begin{equation}\label{eq:theta-definition}
+ \Theta_0(s)=\frac{\xi(2s)}{\xi(1+2s)}
+             =\frac{\xi(2s)}{\xi(-2s)},
+ \qquad \Repart s>0.
+\end{equation}
+
+\begin{theorem}[Unconditional inner-factor theorem]
+\label{thm:inner}
+The function $\Theta_0$ belongs to $H^\infty(\C_+)$, has norm one, and is a
+meromorphic inner function of zero mean type with no singular inner factor.
+Its zeros, with multiplicity, are precisely $a=\rho/2$, where $\rho$ ranges
+over the nontrivial zeros of $\xi$.  With factors normalized to equal one at
+the origin,
+\begin{equation}\label{eq:theta-product}
+ \Theta_0(s)=
+ \prod_{\rho}
+ \frac{\bar\rho}{\rho}\frac{\rho-2s}{2s+\bar\rho}.
+\end{equation}
+The product is taken with multiplicity, with the zeros ordered by increasing
+$\abs{\Impart\rho}$ and conjugate-paired; it converges locally uniformly on
+$\C_+$.
+Moreover, for the standard Eisenstein coefficient $c$,
+\begin{equation}\label{eq:c-theta}
+ c\left(\frac12+s\right)
+ =\frac{s+1/2}{s-1/2}\Theta_0(s).
+\end{equation}
+No form of RH is used in these assertions.
+\end{theorem}
+
+\begin{proof}
+The denominator in \eqref{eq:theta-definition} is nonzero in $\C_+$ because
+$\Repart(1+2s)>1$.  Thus the zero divisor and multiplicities follow without
+cancellation.  Lagarias's modified-Hadamard-product inequality
+\cite[Lemma~2.1]{Lagarias2005} states, for $h\geq1/2$ and
+$\Repart u>1/2$, that
+\[
+ \abs{\xi(h+u)}>\abs{\xi(h+1-\bar u)}.
+\]
+Taking $h=1/2$ and $u=1/2+2s$ gives
+\[
+ \abs{\xi(1+2s)}>\abs{\xi(1-2\bar s)}
+ =\abs{\xi(2s)},
+\]
+so $\abs{\Theta_0(s)}<1$ in $\C_+$.  On $s=iy$, the functional equation
+and reality symmetry give
+$\xi(1+2iy)=\overline{\xi(2iy)}$, with neither side zero.  Hence the boundary
+modulus is one at every finite boundary point.
+
+Lagarias is used here only for the Hermite--Biehler inequality and hence the
+inner bound.  The remaining factorization assertions follow from the
+boundary-meromorphy and asymptotic argument that follows.  The zero counting
+formula implies the half-plane Blaschke condition.  Since
+$\Theta_0$ is meromorphic across every finite point of $i\R$, the finite
+boundary singular measure vanishes.  Direct algebra and Stirling's formula
+give, as $x\to+\infty$,
+\begin{equation}\label{eq:theta-asymptotic}
+ \Theta_0(x)=\sqrt\pi\,x^{-1/2}\bigl(1+O(x^{-1})\bigr),
+ \qquad
+ \lim_{x\to\infty}\frac1x\log\abs{\Theta_0(x)}=0.
+\end{equation}
+Thus the exponential factor at infinity is absent.  This proves the pure
+Blaschke factorization and \eqref{eq:theta-product}.  Finally, substitution
+of the definitions gives
+\[
+ \Theta_0(s)=
+ \frac{s-1/2}{s+1/2}\sqrt\pi\,
+ \frac{\Gamma(s)\zeta(2s)}{\Gamma(s+1/2)\zeta(1+2s)},
+\]
+which is \eqref{eq:c-theta}.
+\end{proof}
+
+Here zero mean type means the second limit in
+\eqref{eq:theta-asymptotic}.  Some conventions include the exponential mass
+at infinity among singular inner factors; the theorem excludes it explicitly.
+
+\subsection{Positive energy and the double-primed Lax--Phillips system}
+
+Let $X=\mathrm{PSL}_2(\mathbb Z)\backslash\mathbb H$, use the positive
+Laplacian
+\[
+ \Delta_X=-y^2(\partial_x^2+\partial_y^2),
+\]
+and set $A_c=(\Delta_X-1/4I)|_{L_c^2(X)}$.  If $\mathcal E$ denotes the Eisenstein
+transform, normalized so that
+\[
+ \mathcal E A_c\mathcal E^{-1}=M_{\kappa^2},
+\]
+then on a smooth absolutely continuous core
+\begin{equation}\label{eq:energy-map}
+ (f_0,f_1)\longmapsto
+ \bigl(\kappa\mathcal E f_0,\mathcal E f_1\bigr)
+\end{equation}
+is isometric for the positive wave energy.  Completion gives the homogeneous
+form space
+\[
+ \dot H^1_{A_c}\oplus L_c^2(X).
+\]
+The Pavlov--Faddeev absolutely continuous first-order data space and Uetake's
+continuous positive-energy space are canonically unitarily equivalent through
+this common Eisenstein spectral representation; see
+\cite[pp.~164--170]{PavlovFaddeev1975} and
+\cite[pp.~102--105]{Uetake2007}.  Thus \eqref{eq:energy-map} supplies the
+required energy-unitary identification.  Pavlov--Faddeev use an overall
+factor $1/2$ in the quadratic energy, removed by a harmless scalar
+normalization.
+
+For the modular surface, the constant mode is the sole below-threshold
+residual mode.  Cusp-form standing waves are removed on passing to the
+continuous first-order spectral space, and there is no $L^2$ threshold
+eigenfunction at $1/4$.  The absence of a threshold eigenvalue is an explicit
+assumption in the general Pavlov--Faddeev construction and must not be
+silently generalized beyond the modular case.
+
+The correct incoming and outgoing spaces for the orthogonal interaction
+semigroup are
+\[
+ \Dcal_\pm''=\Dcal_\pm^0\cap\Hcal_E',
+\]
+not the projected primed spaces.  Uetake verifies invariance, trivial
+intersection, translate density, and
+$\Dcal_-''\perp_E\Dcal_+''$; see
+\cite[pp.~104--105]{Uetake2007}.  If
+\[
+ \Kcal=\Hcal_c'\ominus_E(\Dcal_-''\oplus\Dcal_+''),
+\]
+then, for $t\geq0$,
+\begin{equation}\label{eq:compression}
+ Z(t)=P^E_{\Kcal}U(t)|_{\Kcal}
+     =Q_+U(t)Q_-|_{\Kcal}
+\end{equation}
+is a strongly continuous contraction semigroup.  Orthogonality and the
+one-sided invariance give \eqref{eq:compression} directly; the discarded
+outgoing component remains outgoing, which proves the semigroup law.
+Pavlov--Faddeev prove the analogous orthogonal Lax--Phillips axioms and
+contraction semigroup for their own incoming and outgoing spaces
+\cite[pp.~163--175]{PavlovFaddeev1975}; see also Lax--Phillips
+\cite[\S5]{LaxPhillips1980}.
+
+\subsection{The full factor, reduced model, and exceptional mode}
+
+Put
+\[
+ b_{1/2}(s)=\frac{s-1/2}{s+1/2},
+ \qquad \Phi(s)=-b_{1/2}(s)\Theta_0(s).
+\]
+For the orthogonal double-primed system, the full scattering factor is
+\begin{equation}\label{eq:full-scattering}
+ S_c''(s)=\Phi(s)=-\frac{s-1/2}{s+1/2}
+                     \frac{\xi(2s)}{\xi(-2s)},
+\end{equation}
+not $c(1/2+s)$ and not $\Theta_0$ alone
+\cite[p.~111]{Uetake2007}.  The reciprocal finite factor appearing for
+Uetake's nonorthogonal primed spaces is a different convention
+\cite[pp.~117--118]{Uetake2007}.
+In this subsection write $\Kcal''=\Kcal$ for the full physical
+double-primed interaction space.
+
+\begin{theorem}[Exact model and finite exceptional splitting]
+\label{thm:exact-model}
+Let $\mathcal T_+$ be Uetake's outgoing energy-unitary translation map and
+normalize
+\[
+ [\mathcal L_-g](s)=\int_{-\infty}^0e^{s\tau}g(\tau)\,d\tau,
+ \qquad
+ \frac1{2\pi}\int_\R\abs{\mathcal L_-g(iy)}^2\,dy=\norm g_2^2.
+\]
+Then
+\begin{equation}\label{eq:U-full}
+ [\mathscr U_{\rm full}f](s)
+ =[\mathcal L_-\mathcal T_+f](s)
+ =\int_0^\infty e^{-sx}(\mathcal T_+f)(-x)\,dx,
+ \qquad
+ \mathscr U_{\rm full}:\Kcal''\longrightarrow K_\Phi.
+\end{equation}
+is unitary and intertwines $Z(t)$ with
+\[
+ A_{\Phi,t}^*
+ =\left(P_{K_\Phi}M_{e^{-ts}}|_{K_\Phi}\right)^*.
+\]
+There is a bounded invariant topological direct sum
+\begin{equation}\label{eq:model-splitting}
+ K_\Phi=K_{\Theta_0}\dotplus\spanop\{k_{1/2}^{\Phi}\},
+\end{equation}
+under which
+\begin{equation}\label{eq:model-intertwining}
+ Z(t)\quad\text{is boundedly similar to}\quad
+ A_{0,t}^*\oplus e^{-t/2}.
+\end{equation}
+More explicitly, if
+\[
+ J:K_{\Theta_0}\oplus\C\longrightarrow K_\Phi,
+ \qquad J(f,c)=f+c\,k_{1/2}^{\Phi},
+\]
+then the exact physical-to-split-model intertwiner is
+\begin{equation}\label{eq:exact-W}
+ W=J^{-1}\mathscr U_{\rm full}.
+\end{equation}
+The reduced generator has spectrum, with algebraic multiplicity,
+\begin{equation}\label{eq:model-spectrum}
+ \sigma(B_0)=\{-\bar\rho/2:\xi(\rho)=0\}
+             =\{-\rho/2:\xi(\rho)=0\},
+\end{equation}
+its generalized root vectors are complete, and the full generator adds only
+the one-dimensional eigenvalue $-1/2$.  There are no other finite spectral
+points, and $-i\in\rho(B)$.
+\end{theorem}
+
+\begin{proof}
+The unitary full-model transform and the generator convention are given in
+\cite[pp.~109--113]{Uetake2007}.  Because $b_{1/2}\Theta_0$ has one more
+Blaschke zero than $\Theta_0$, $K_{\Theta_0}$ has codimension one in
+$K_\Phi$ and is invariant under the adjoint model semigroup.  The reproducing
+kernel at $1/2$ is an eigenvector with orbit $e^{-t/2}k_{1/2}^{\Phi}$ and is
+not in $K_{\Theta_0}$, since $\Theta_0(1/2)\neq0$.  It therefore supplies the
+invariant complement in \eqref{eq:model-splitting}.  The splitting is
+bounded because it is a closed codimension-one decomposition, but is not in
+general orthogonal.  Thus $J$ is boundedly invertible, and
+\eqref{eq:exact-W} proves \eqref{eq:model-intertwining}.
+
+Uetake's Theorems~4.2 and 4.4 identify the reduced resolvent poles, algebraic
+multiplicities, and complete root system.  The two forms of the set in
+\eqref{eq:model-spectrum} agree by the functional-equation and conjugation
+symmetries.  The separate full-space statement
+\cite[pp.~100--101]{Uetake2007} gives
+$\sigma(B'')\setminus\sigma(B_0)=\{-1/2\}$ and says that the full space is one
+dimension larger.  All nontrivial zeta zeros lie in
+$0<\Repart\rho<1$, so their generator eigenvalues have real parts strictly
+between $-1/2$ and $0$; the exceptional eigenvalue is $-1/2$.  These results
+exclude all other finite spectrum and prove $-i\in\rho(B)$.
+\end{proof}
+
+The first transform in Theorem~\ref{thm:exact-model} is unitary.  The second,
+finite-dimensional splitting is only a bounded similarity.  Hence it gives
+two-sided norm comparison and exact equality of logarithmic exponents, not
+literal equality of finite-time norms.  The exceptional block decays like
+$e^{-t/2}$ and cannot change an exponent at or above $-1/4$.
+
+\subsection{The primary Pavlov--Faddeev theorem}
+
+The primary 1972 paper, in its English translation
+\cite[\S\S3--4]{PavlovFaddeev1975}, does prove a whole-space,
+resolvent-regularized strip theorem.  Theorem~1 relates bounded holomorphic
+continuation of the rationally regularized scattering function to exponential
+decay of the uniform interaction-space operator norm
+\cite[original pp.~177--180]{PavlovFaddeev1975}; the converse holds in each
+strictly smaller strip.  Lemma~8
+\cite[pp.~185--186]{PavlovFaddeev1975} supplies the zeta estimates in every
+strip of width $a<1/4$ under RH, and the corollary, formulas (48)--(49)
+\cite[pp.~186--187]{PavlovFaddeev1975}, states the logarithmic limsup
+$-1/4$ with the quantifiers
+\[
+ \forall a<\frac14\ \exists C_a\ \forall t\geq0.
+\]
+The paper therefore supports exactly the regularized operator criterion, not
+an unregularized norm or a dense fixed-vector substitute.
+
+Its native convention is $Z(t)=e^{itB_{\rm PF}}$.  If $Z(t)=e^{tB}$ in the
+ordinary generator convention, then $B=iB_{\rm PF}$ and
+\begin{equation}\label{eq:PF-regularizer-conversion}
+ (B_{\rm PF}+iI)^{-1}=-i(I-B)^{-1}=-iR(1,B).
+\end{equation}
+Only after verifying $1,-i\in\rho(B)$ and applying the fixed-resolvent
+comparison may this be replaced, at the exponent level, by
+$(B+iI)^{-1}=-R(-i,B)$.  Thus the logarithmic exponent and the epsilon family
+are unchanged, although the displayed resolvents are not literally equal.
+The secondary survey \cite[\S3.2, (3.6), p.~1004]{TakhtajanEtAl2017} quotes
+the same regularized formula; the native convention is checked in the primary
+paper above.
+
+\section{Other partial results and routes that were tested}
+\label{sec:other-routes}
+
+\subsection{The diagonal zero test has stretched-exponential decay}
+
+The fixed regularizer suppresses very high zeros strongly.  The classical
+zero-free region, combined with the functional equation, gives
+\[
+ \Repart a\geq\frac{c}{\log(2+\abs{\Impart a})}
+ \qquad(a=\rho/2)
+\]
+outside a bounded set.  Optimizing in height yields the unconditional
+one-point estimate
+\begin{equation}\label{eq:diagonal-stretched}
+ \sup_{\Theta_0(a)=0}
+ \frac{e^{-t\Repart a}}{\abs{a+i}}
+ \leq C e^{-c'\sqrt t}.
+\end{equation}
+This is a useful explanation of the regularizer, but it controls only the
+$1\times1$ Pick minors.  It gives no upper bound for the full operator norm,
+which depends on arbitrary linear combinations and confluent jets.
+
+\subsection{Ordinary Riesz-basis and Carleson synthesis are unavailable}
+
+On the critical line, the normalized kernel inner product for two nodes
+$a=1/4+i\gamma/2$ and $b=1/4+i\gamma'/2$ has modulus
+\[
+ \frac1{\sqrt{1+(\gamma-\gamma')^2}}.
+\]
+The Riemann--von Mangoldt density together with the unconditional positive
+proportion of simple critical zeros forces arbitrarily close distinct nodes,
+so the normalized root kernels are not a Riesz sequence.  More explicitly,
+the standard atomic measure
+\[
+ \mu=\sum_j2\Repart(a_j)\delta_{a_j}
+\]
+fails the half-plane Carleson condition: unit boundary intervals along a
+sequence contain $\gg\log T$ simple critical nodes.  Resolvent weighting may
+restore an upper Bessel--Carleson bound, but it supplies neither a lower Riesz
+bound nor a bounded coefficient-extraction map.  It therefore does not
+identify the graph norm with a weighted $\ell^2$ coefficient norm.
+
+\subsection{Compactness and strong stability have no quantitative rate}
+
+The proof of Theorem~\ref{thm:qualitative-decay} uses all the available
+qualitative model information.  It cannot be sharpened abstractly.  For
+example, on $\ell^2(\mathbb N)$ let
+\[
+ Be_n=(-1/n+in)e_n.
+\]
+Then $e^{tB}$ is a normal, strongly stable contraction semigroup, its
+eigenvectors are an orthonormal basis, and $R(1,B)$ is compact, but
+\[
+ \norm{e^{tB}R(1,B)}\asymp t^{-1}.
+\]
+Thus even normality, complete roots, compact regularization, and strong
+stability give exponent zero without additional quantitative geometry.
+
+\subsection{Why functional-equation pairing cannot be positivized}
+
+There are two distinct reflections.  Scattering gives
+\[
+ \Theta_0(-s)=\Theta_0(s)^{-1},
+\]
+which is centered on the Hardy boundary $\Repart s=0$.  Zeta-zero symmetry
+gives $a\mapsto1/2-\bar a$, centered on $\Repart a=1/4$.  The latter does not
+preserve $\C_+$ or its boundary and does not define a bounded Hardy-space
+conjugation.  The canonical model conjugation yields $B\leftrightarrow B^*$
+but no $1/4$ shift.  The algebraic critical reflection yields the indefinite
+form \eqref{eq:Krein-pair}; applying $Q^*Q$ or $\abs Q$ removes exactly the
+off-diagonal relation that encoded the functional equation.
+
+\section{Corrections and qualifications to the governing specification}
+\label{sec:specification-errors}
+
+No error was found in the graph-norm equivalence, fixed-resolvent comparison,
+formula \eqref{eq:c-theta}, adjoint/time sign, eigenvector lower bound, or the
+epsilon-family quantifiers.  The following points should nevertheless be
+corrected or sharpened.
+
+\begin{enumerate}[label=\textup{(S\arabic*)},leftmargin=*]
+ \item The five labeled identification hypotheses can now be replaced by
+ explicit propositions and primary citations, as summarized in
+ Section~\ref{sec:identifications}.  They must not remain implicit in a
+ claimed proof.
+
+ \item The physical double-primed scattering factor is
+ $-b_{1/2}\Theta_0$.  The coefficient $c(1/2+s)=b_{1/2}^{-1}\Theta_0$ has a
+ pole at $s=1/2$, whereas the orthogonal double-primed factor has a zero there
+ and produces the generator eigenvalue $-1/2$.  These are different objects.
+
+ \item The hypothesis that $\Theta_0$ is bounded inner, of zero mean type,
+ and without a singular factor is an unconditional theorem
+ (Theorem~\ref{thm:inner}), not an RH-dependent assumption.
+
+ \item In the general Pavlov--Faddeev construction absence of a threshold
+ eigenvalue is an explicit assumption.  It is valid for the modular surface
+ after the threshold analysis, but not automatically for an arbitrary
+ one-cusp group.
+
+ \item Pavlov--Faddeev's energy differs by an overall factor $1/2$ from the
+ modern convention.  A scalar rescaling makes the identification literally
+ unitary; this does not affect operator norms after both source and target are
+ rescaled consistently.
+
+ \item A general bounded similarity provides two-sided constant comparison of
+ norms.  Unitarity guarantees exact equality, but it is too strong to say that
+ exact equality can occur only under unitarity.
+
+ \item The exceptional spectral-bound argument uses finite dimensionality:
+ on the one-dimensional exceptional block the growth exponent equals the
+ spectral bound.  Such an inference is false for a general
+ infinite-dimensional semigroup.
+
+ \item The phrase zero mean type should be defined, for example by
+ \eqref{eq:theta-asymptotic}.  Boundary modulus alone never proves an
+ $H^\infty$ bound.
+
+ \item The specification's heuristic warning about absolute contour
+ integration can be replaced, under the verified model, by
+ Theorem~\ref{thm:L1-divergence}.
+
+ \item Any assertion that the unregularized model norm is exactly one for all
+ $t>0$ needs a separate model-space theorem or proof.  It is irrelevant to
+ \eqref{eq:objective} and should not be used as a substitute for the
+ regularized estimate.
+\end{enumerate}
+
+\section{The exact remaining obstruction and acceptance audit}
+\label{sec:remaining}
+
+For the zeta inner function, put $a_j=\rho_j/2$, retain the multiplicity
+$m_j$, and set $\psi_t(s)=-e^{-ts}/(s+i)$.  After all physical-to-model
+identifications and the exceptional splitting, the unresolved assertion is
+the following single uniform statement:
+\begin{center}
+\fbox{\begin{minipage}{0.88\textwidth}
+For every $\eps>0$ there is one constant $C_\eps$, independent of $t$, the
+number and heights of the selected zeros, their gaps, and their
+multiplicities, such that every finite confluent matrix
+\begin{equation}\label{eq:boxed-obstruction}
+ \left[
+ \left.\frac1{p!q!}\partial_s^p\partial_{\bar z}^q
+ \frac{C_\eps^2e^{(-1/2+2\eps)t}
+       -\psi_t(s)\overline{\psi_t(z)}}{s+\bar z}
+ \right|_{s=a_j,z=a_k}
+ \right]_{(j,p),(k,q)}
+ \succeq0
+\end{equation}
+for all $t\geq0$ and $0\leq p<m_j$, $0\leq q<m_k$.
+\end{minipage}}
+\end{center}
+Equivalently, one must prove the graph-tail inequality
+\begin{equation}\label{eq:remaining-tail}
+ \int_t^\infty\abs{f(x)}^2\,dx
+ \leq C_\eps^2e^{(-1/2+2\eps)t}
+       \int_0^\infty\abs{f'(x)+if(x)}^2\,dx
+\end{equation}
+for every $f\in\mathscr K_{\Theta_0}\cap W^{1,2}$, with one constant for the
+whole graph-norm unit ball.  It is also equivalent to graph boundedness of
+all subcritical outgoing weights, or to the bounded positive Lyapunov
+operators of Theorem~\ref{thm:weighted-Gramian}.
+
+The one-point part of \eqref{eq:boxed-obstruction} is already RH-equivalent
+after zero symmetry.  Assuming RH removes that diagonal obstruction, but it
+does not prove the full matrices: Theorem~\ref{thm:abstract-counterexample}
+shows that large confluent blocks can destroy the exponent even when every
+zero is critical.  Proposition~\ref{prop:finite-dimension} shows the converse
+local fact: every fixed total jet dimension is harmless after an
+$\eps$-loss.  The unresolved content is precisely uniformity as the total
+dimension tends to infinity.
+
+Table~\ref{tab:acceptance} records the audit against the ten acceptance
+criteria of the governing specification.  A check means that the issue has
+been handled in the reductions above; it does not mean that the final uniform
+estimate has been proved.
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{p{0.06\textwidth}p{0.73\textwidth}p{0.08\textwidth}}
+\hline
+Item & Status & Audit\\
+\hline
+A1 & Exact physical energy space and physical-to-model transform are stated
+     in Section~\ref{sec:identifications}. & check\\
+A2 & The positive reduced energy norm is used; the raw indefinite form is
+     not used. & check\\
+A3 & The exact fixed-resolvent graph norm is retained in
+     \eqref{eq:tail-formula}; fixed-resolvent changes are proved harmless. & check\\
+A4 & The order $\forall\eps\,\exists C_\eps\,\forall t$ appears explicitly
+     in \eqref{eq:objective} and \eqref{eq:boxed-obstruction}. & open\\
+A5 & The Pick, tail, and Lyapunov statements all range over the whole
+     graph-norm unit ball, not a fixed or dense set of vectors. & open\\
+A6 & The full factor $-b_{1/2}\Theta_0$ is split into the reduced model plus
+     the faster one-dimensional block. & check\\
+A7 & Ordinary generator, time direction, adjoint model, zero map, and bounded
+     norm transfer are tracked in Theorem~\ref{thm:exact-model}. & check\\
+A8 & Normal-family and weak Gramian limits are justified for the stated
+     reductions; absolute contour interchange is rejected by
+     Theorem~\ref{thm:L1-divergence}. & qualified\\
+A9 & All uniform root-based criteria retain multiplicities through confluent
+     jets, and the counterexample treats full Jordan blocks. & check\\
+A10 & No growth estimate is inferred from spectrum alone; the abstract
+      counterexample proves why this would be invalid. & check\\
+\hline
+\end{tabular}
+\caption{Acceptance audit.  A4--A5 remain open because they are the target
+uniform estimate itself.}
+\label{tab:acceptance}
+\end{table}
+
+\section{Conclusion}
+
+The historical identifications and the analytic inner-function hypothesis
+can be discharged rigorously.  The exact problem that remains is not a
+spectral-bound calculation: it is the uniform confluent Pick inequality
+\eqref{eq:boxed-obstruction}, equivalently the whole-space graph-tail estimate
+\eqref{eq:remaining-tail} or a bounded subcritical observability Gramian.
+Standard complete positivity, Stinespring dilation, Arveson extension,
+scattering unitarity, root completeness, compact resolvent, and the functional
+equation each illuminate this statement but do not supply its missing uniform
+constant.  The functional equation gives an indefinite critical pairing;
+positive forms become useful only after imposing the graph boundedness that
+is itself the target.
+
+The strongest unconditional operator conclusion currently obtained is
+\[
+ \norm{Z(t)(B+iI)^{-1}}\to0,
+ \qquad -\frac14\leq\omega_{\rm reg}(B)\leq0.
+\]
+The critical-line Blaschke construction proves that further abstract model
+theory alone cannot close this bracket.  Any successful proof must introduce
+new zeta-specific quantitative control of arbitrarily large zero families and
+their jets, or an equivalent automorphic observability estimate.  Conversely,
+an unconditional proof of that uniform estimate would, already by its
+one-dimensional minors and zero symmetry, prove RH.  No such proof or
+disproof has been found here.
+
+\begin{thebibliography}{99}
+
+\bibitem{AglerMcCarthy2000}
+J.~Agler and J.~E.~McCarthy,
+\emph{Complete Nevanlinna--Pick kernels},
+J. Funct. Anal. \textbf{175} (2000), no.~1, 111--124,
+\href{https://doi.org/10.1006/jfan.2000.3599}{doi:10.1006/jfan.2000.3599}.
+
+\bibitem{Arveson1969}
+W.~B.~Arveson,
+\emph{Subalgebras of $C^*$-algebras},
+Acta Math. \textbf{123} (1969), 141--224,
+\href{https://doi.org/10.1007/BF02392388}{doi:10.1007/BF02392388}.
+
+\bibitem{EngelNagel2000}
+K.-J. Engel and R.~Nagel,
+\emph{One-Parameter Semigroups for Linear Evolution Equations},
+Graduate Texts in Mathematics, vol.~194, Springer, New York, 2000.
+
+\bibitem{HeathBrown1979}
+D.~R. Heath-Brown,
+\emph{Simple zeros of the Riemann zeta-function on the critical line},
+Bull. London Math. Soc. \textbf{11} (1979), no.~1, 17--18,
+\href{https://doi.org/10.1112/blms/11.1.17}{doi:10.1112/blms/11.1.17}.
+
+\bibitem{Lagarias2005}
+J.~C. Lagarias,
+\emph{Zero spacing distributions for differenced $L$-functions},
+Acta Arith. \textbf{120} (2005), no.~2, 159--184,
+\href{https://doi.org/10.4064/aa120-2-4}{doi:10.4064/aa120-2-4}.
+
+\bibitem{LaxPhillips1976}
+P.~D. Lax and R.~S. Phillips,
+\emph{Scattering Theory for Automorphic Functions},
+Annals of Mathematics Studies, vol.~87,
+Princeton University Press, Princeton, NJ, 1976.
+
+\bibitem{LaxPhillips1980}
+P.~D. Lax and R.~S. Phillips,
+\emph{Scattering theory for automorphic functions},
+Bull. Amer. Math. Soc. (N.S.) \textbf{2} (1980), no.~2, 261--295,
+\href{https://doi.org/10.1090/S0273-0979-1980-14735-7}
+{doi:10.1090/S0273-0979-1980-14735-7}.
+
+\bibitem{MuhlySolel2004}
+P.~S. Muhly and B.~Solel,
+\emph{Hardy algebras, $W^*$-correspondences and interpolation theory},
+Math. Ann. \textbf{330} (2004), no.~2, 353--415,
+\href{https://doi.org/10.1007/s00208-004-0554-x}
+{doi:10.1007/s00208-004-0554-x}.
+
+\bibitem{Nikolski2002}
+N.~K. Nikolski,
+\emph{Operators, Functions, and Systems: An Easy Reading. Vol.~2:
+Model Operators and Systems},
+Mathematical Surveys and Monographs, vol.~93,
+American Mathematical Society, Providence, RI, 2002.
+
+\bibitem{PavlovFaddeev1975}
+B.~S. Pavlov and L.~D. Faddeev,
+\emph{Scattering theory and automorphic functions},
+J. Soviet Math. \textbf{3} (1975), no.~4, 522--548;
+English translation of Zap. Nauchn. Sem. LOMI \textbf{27} (1972), 161--193,
+\href{https://www.mathnet.ru/eng/znsl2505}{MathNet source page}.
+
+\bibitem{Sarason1967}
+D.~Sarason,
+\emph{Generalized interpolation in $H^\infty$},
+Trans. Amer. Math. Soc. \textbf{127} (1967), no.~2, 179--203,
+\href{https://doi.org/10.1090/S0002-9947-1967-0208383-8}
+{doi:10.1090/S0002-9947-1967-0208383-8}.
+
+\bibitem{TakhtajanEtAl2017}
+L.~A. Takhtajan, A.~Yu. Alekseev, I.~Ya. Aref'eva,
+M.~A. Semenov-Tian-Shansky, E.~K. Sklyanin, F.~A. Smirnov,
+and S.~L. Shatashvili,
+\emph{Scientific heritage of L. D. Faddeev. Survey of papers},
+Russian Math. Surveys \textbf{72} (2017), no.~6, 977--1081,
+\href{https://doi.org/10.1070/RM9799}{doi:10.1070/RM9799}.
+
+\bibitem{Uetake2007}
+Y.~Uetake,
+\emph{The Lax--Phillips infinitesimal generator and the scattering matrix for
+automorphic functions},
+Ann. Polon. Math. \textbf{92} (2007), no.~2, 99--122,
+\href{https://doi.org/10.4064/ap92-2-1}{doi:10.4064/ap92-2-1}.
+
+\end{thebibliography}
+
+\end{document}

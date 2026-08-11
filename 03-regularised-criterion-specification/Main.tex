@@ -1,0 +1,984 @@
+\documentclass[11pt]{amsart}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage[margin=1in]{geometry}
+\usepackage{microtype}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage[colorlinks=true,
+  linkcolor=blue!45!black,
+  citecolor=blue!45!black,
+  urlcolor=blue!45!black]{hyperref}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{problem}[theorem]{Problem}
+\newtheorem{hypothesis}[theorem]{Hypothesis}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{warning}[theorem]{Warning}
+
+\DeclareMathOperator{\Dom}{Dom}
+\DeclareMathOperator{\Ran}{Ran}
+\DeclareMathOperator{\spanop}{span}
+\DeclareMathOperator{\dist}{dist}
+\DeclareMathOperator{\Repart}{Re}
+\DeclareMathOperator{\Impart}{Im}
+\newcommand{\C}{\mathbb C}
+\newcommand{\R}{\mathbb R}
+\newcommand{\Hh}{\mathbb H}
+\newcommand{\Bcal}{\mathcal B}
+\newcommand{\Kcal}{\mathcal K}
+\newcommand{\Hcal}{\mathcal H}
+\newcommand{\Dcal}{\mathcal D}
+\newcommand{\ip}[2]{\left\langle #1,#2\right\rangle}
+\newcommand{\norm}[1]{\left\lVert #1\right\rVert}
+\newcommand{\abs}[1]{\left\lvert #1\right\rvert}
+\newcommand{\rhoB}{\rho}
+\newcommand{\eps}{\varepsilon}
+
+\title{\bfseries The Lax--Phillips--Pavlov--Faddeev\\
+Asymptotic Criterion for the Riemann Hypothesis\\[4pt]
+\large A convention-fixed problem specification and solver handoff}
+\author{OpenAI Codex}
+\date{10 August 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+This document fixes a mathematically unambiguous target corresponding to the
+Pavlov--Faddeev asymptotic criterion quoted in later accounts of the
+Lax--Phillips scattering theory of the automorphic wave equation.  It defines
+the reduced positive energy space, the interaction semigroup, its generator
+and resolvent, and the precise regularized operator norm.  In the convention
+adopted here, the quoted RH-equivalence is
+\[
+ \mathrm{RH}
+ \quad\Longleftrightarrow\quad
+ \limsup_{t\to\infty}\frac1t
+ \log\norm{Z(t)(B+iI)^{-1}}_{E\to E}=-\frac14.
+\]
+The resolvent factor is essential.  Equivalently, the estimate measures the
+operator norm of $Z(t)$ from the generator domain with its graph norm into the
+ordinary energy space.  The unregularized norm $\norm{Z(t)}_{E\to E}$ and the
+fixed-vector quantity $\norm{Z(t)f}_{E}$ are different objects and are recorded
+separately.  Conditional on the physical-to-model eigenvalue correspondence,
+the implication from the regularized upper bound to RH is proved below.  The
+reverse implication is attributed to Pavlov--Faddeev by a 2017 survey but is
+not reconstructed from the 1972/1975 primary paper here.  Accordingly, this
+handoff separates three tasks: verifying the historical theorem, reproving its
+conditional analytic direction, and deciding the regularized estimate
+unconditionally.  Only the last task would decide RH.
+\end{abstract}
+
+\tableofcontents
+
+\section{The target statement in one box}
+
+The notation in this box is defined in full in Sections~\ref{sec:energy}--\ref{sec:regularized}.
+
+\begin{center}
+\fbox{\begin{minipage}{0.92\textwidth}
+Let $(\Kcal,\ip{\cdot}{\cdot}_{E})$ be the reduced Lax--Phillips
+interaction Hilbert space for the modular automorphic wave equation.  Let
+$Z=(Z(t))_{t\geq0}$ be its interaction semigroup and let $B$ be the ordinary
+$C_{0}$-semigroup generator, so that $Z(t)=e^{tB}$.  Assume the explicitly
+listed energy-space, scattering, resolvent, and zeta-eigenvalue identification
+hypotheses in this document.  In particular, assume $-i\in\rho(B)$ and put
+\[
+ M(t):=\norm{Z(t)(B+iI)^{-1}}_{E\to E},
+ \qquad
+ \omega_{\mathrm{reg}}(B)
+ :=\limsup_{t\to\infty}\frac1t\log M(t).
+\]
+The mathematical target is $\omega_{\mathrm{reg}}(B)=-1/4$.  The historical
+equivalence quoted by Takhtajan et al.\ is
+\[
+ \boxed{\quad
+ \mathrm{RH}\quad\Longleftrightarrow\quad
+ \omega_{\mathrm{reg}}(B)=-\frac14.
+ \quad}
+\]
+Under the zeta-eigenvalue identification,
+$\omega_{\mathrm{reg}}(B)\geq-1/4$ unconditionally, so the right-hand
+condition can equivalently be written
+\[
+ \mathrm{RH}\quad\Longleftrightarrow\quad
+ \omega_{\mathrm{reg}}(B)\leq-\frac14.
+\]
+The norm is
+\[
+ M(t)=
+ \sup_{0\neq h\in\Kcal}
+ \frac{\norm{Z(t)(B+iI)^{-1}h}_{E}}{\norm{h}_{E}}
+ =
+ \sup_{0\neq f\in\Dom B}
+ \frac{\norm{Z(t)f}_{E}}{\norm{(B+iI)f}_{E}}.
+\]
+\end{minipage}}
+\end{center}
+
+The last equality is the most important norm specification in this document:
+the source norm is a graph norm on $\Dom B$, while the target norm is the
+ordinary positive energy norm.
+
+\section{Arithmetic normalization}
+
+\begin{definition}[Zeta and completed zeta]
+For $\Repart s>1$ let
+\[
+ \zeta(s)=\sum_{n=1}^{\infty}n^{-s}.
+\]
+Its meromorphic continuation has a simple pole at $s=1$.  Define
+\[
+ \xi(s):=\frac12s(s-1)\pi^{-s/2}\Gamma\!\left(\frac{s}{2}\right)\zeta(s).
+\]
+Then $\xi$ is entire and satisfies
+\[
+ \xi(s)=\xi(1-s)=\overline{\xi(\bar s)}.
+\]
+A \emph{nontrivial zero} is a zero $\rho=\beta+i\gamma$ of $\xi$.
+\end{definition}
+
+\begin{definition}[Riemann hypothesis]
+The Riemann hypothesis is the assertion
+\[
+ \mathrm{RH}:\qquad \xi(\rho)=0\ \Longrightarrow\ \Repart\rho=\frac12.
+\]
+The multiset of zeros is invariant under $\rho\mapsto\bar\rho$ and
+$\rho\mapsto1-\rho$.
+\end{definition}
+
+The factor $1/4$ in the target asymptotic is forced by the following
+model normalization, once the physical-to-model identification in
+Hypothesis~\ref{hyp:model} is available:
+\[
+ a=\frac{\rho}{2}
+ \quad\longmapsto\quad
+ \lambda_{\rho}=-\bar a=-\frac{\bar\rho}{2},
+ \qquad
+ \Repart\lambda_{\rho}=-\frac{\beta}{2}.
+\]
+Thus the critical line $\beta=1/2$ maps to the semigroup spectral line
+$\Repart\lambda=-1/4$.
+
+\section{The automorphic wave energy space}\label{sec:energy}
+
+\subsection{The spatial operator and wave equation}
+
+Let
+\[
+ X=\operatorname{PSL}_{2}(\mathbb Z)\backslash\Hh,
+ \qquad
+ d\mu(z)=\frac{dx\,dy}{y^{2}},\qquad z=x+iy,
+\]
+and let
+\[
+ \Delta_X=-y^{2}(\partial_x^{2}+\partial_y^{2})
+\]
+denote the nonnegative self-adjoint Friedrichs realization of the automorphic
+Laplacian in $L^{2}(X,d\mu)$.  Following the Lax--Phillips normalization, set
+\[
+ A:=\Delta_X-\frac14I.
+\]
+The corresponding automorphic wave equation is
+\begin{equation}\label{eq:wave}
+ u_{tt}+Au=0.
+\end{equation}
+The absolutely continuous spectrum of $A$ starts at $0$.  Below-threshold
+modes and threshold null directions are responsible for indefiniteness or
+degeneracy of the raw energy form.  Positive-energy cusp forms are removed for
+a different reason: they are point-spectrum standing waves rather than
+scattering states.
+
+\subsection{Energy form and positive reduction}
+
+Let $P_{\mathrm{ac}}$ be the absolutely continuous spectral projection of
+$A$, put
+\[
+ \mathfrak h_{c}:=\Ran P_{\mathrm{ac}},
+ \qquad
+ A_{c}:=A\big|_{\mathfrak h_{c}},
+\]
+and note that $A_{c}\geq0$.  For sufficiently regular Cauchy data
+$f=(f_{0},f_{1})$ and $g=(g_{0},g_{1})$ in this sector, define
+\begin{equation}\label{eq:energy-form}
+ E(f,g)
+ :=\ip{A_c^{1/2}f_{0}}{A_c^{1/2}g_{0}}_{L^{2}(X)}
+   +\ip{f_{1}}{g_{1}}_{L^{2}(X)},
+\end{equation}
+Equivalently, on a common operator core,
+\[
+ E(f,g)=\ip{A_cf_{0}}{g_{0}}_{L^{2}(X)}
+       +\ip{f_{1}}{g_{1}}_{L^{2}(X)}.
+\]
+
+Define
+\[
+ \dot{\mathfrak h}^{\,1}_{A_c}
+ :=
+ \overline{\Dom(A_c^{1/2})/\ker A_c}^{\,
+            \norm{A_c^{1/2}\,\cdot}_{2}}
+\]
+and set
+\begin{equation}\label{eq:modern-energy-space}
+ \Hcal_{E}^{c}
+ :=\dot{\mathfrak h}^{\,1}_{A_c}\oplus\mathfrak h_c,
+ \qquad
+ \norm{(f_{0},f_{1})}_{E}^{2}
+ :=\norm{A_{c}^{1/2}f_{0}}_{2}^{2}+\norm{f_{1}}_{2}^{2}.
+\end{equation}
+Thus
+\[
+ \norm{f}_{E}:=E(f,f)^{1/2},
+ \qquad f\in\Hcal_{E}^{c}.
+\]
+This spectral construction explicitly removes the point spectrum.  It is a
+modern convention-fixed realization of the no-standing-waves energy space.
+The historical construction starts from an auxiliary positive completion of
+an indefinite energy form and then passes through primed and double-primed
+quotients/subspaces.  The identification of those historical objects with
+\eqref{eq:modern-energy-space} is an input, not a consequence of notation.
+
+\begin{hypothesis}[Energy-space identification]\label{hyp:energy}
+There is an energy-unitary identification between
+\eqref{eq:modern-energy-space} and the final positive continuous
+Pavlov--Faddeev/Lax--Phillips energy space on which their interaction semigroup
+and regularized estimate are defined.
+\end{hypothesis}
+
+\begin{remark}[Norm convention]
+Throughout this document $\norm{f}_{E}$ is the square root of the conserved
+quadratic energy, as in Lax's Hilbert-space convention.  Every operator norm is
+induced by this Hilbert norm.
+\end{remark}
+
+\subsection{The wave group}
+
+Functional calculus gives a unitary group $U(t)$ on $\Hcal_{E}^{c}$:
+\[
+ U(t)\binom{f_{0}}{f_{1}}
+ =\binom{
+   \cos(tA_{c}^{1/2})f_{0}
+   +A_{c}^{-1/2}\sin(tA_{c}^{1/2})f_{1}}
+ {-A_{c}^{1/2}\sin(tA_{c}^{1/2})f_{0}
+   +\cos(tA_{c}^{1/2})f_{1}}.
+\]
+The formula is interpreted by spectral calculus at the threshold.  It satisfies
+\[
+ U(t+s)=U(t)U(s),\qquad U(t)^{*}=U(-t),\qquad
+ \norm{U(t)f}_{E}=\norm{f}_{E}.
+\]
+
+\section{Incoming, outgoing, and interaction spaces}\label{sec:interaction}
+
+Let $\Dcal_{-},\Dcal_{+}\subset\Hcal_{E}^{c}$ denote the final
+double-primed (causal, modified) incoming and outgoing subspaces of the
+automorphic Lax--Phillips construction.  Rather than hide their special
+properties in an unstated convention, we isolate exactly what is used.
+
+\begin{hypothesis}[Orthogonal automorphic scattering system]\label{hyp:LP}
+The subspaces $\Dcal_{\pm}$ are closed and satisfy
+\begin{align*}
+ U(t)\Dcal_{+}&\subset\Dcal_{+} &&(t\geq0),
+ &U(t)\Dcal_{-}&\subset\Dcal_{-} &&(t\leq0),\\
+ \bigcap_{t\in\R}U(t)\Dcal_{\pm}&=\{0\},
+ &\overline{\bigcup_{t\in\R}U(t)\Dcal_{\pm}}&=\Hcal_{E}^{c},\\
+ \Dcal_{-}&\perp_{E}\Dcal_{+}.&&
+\end{align*}
+Moreover, the operators defined in \eqref{eq:LP-semigroup} below map
+$\Kcal$ into itself, form a $C_{0}$ contraction semigroup, and obey the
+compression identity following that display.
+\end{hypothesis}
+
+The adjective modified records the causal correction and removal of the
+exceptional/standing-wave directions.  These orthogonality and compression
+properties are special to the final automorphic construction; they are not
+asserted for arbitrary incoming/outgoing subspaces.
+
+Let $P_{\Dcal_{\pm}}^{E}$ be the energy-orthogonal projections and set
+\[
+ Q_{\pm}:=I-P_{\Dcal_{\pm}}^{E},
+ \qquad
+ \Kcal:=\Hcal_{E}^{c}\ominus_{E}(\Dcal_{-}\oplus\Dcal_{+}).
+\]
+The Lax--Phillips interaction semigroup is
+\begin{equation}\label{eq:LP-semigroup}
+ Z(t):=Q_{+}U(t)Q_{-}\big|_{\Kcal},\qquad t\geq0.
+\end{equation}
+Under Hypothesis~\ref{hyp:LP},
+\[
+ Z(t)=P_{\Kcal}^{E}U(t)\big|_{\Kcal}.
+\]
+The family $Z=(Z(t))_{t\geq0}$ is then a strongly continuous contraction
+semigroup on $(\Kcal,\norm{\cdot}_{E})$.
+
+Some sources denote the final reduced objects by $\Hcal'_{c}$, $\Kcal''$,
+$\Dcal_{\pm}''$, and $Z''(t)$.  In this document those double primes are
+suppressed: every occurrence of $\Kcal$ or $Z(t)$ refers to the final reduced
+positive-energy interaction space and semigroup, not to the raw indefinite
+space.
+
+\section{Generator and resolvent}\label{sec:generator}
+
+\begin{definition}[Ordinary semigroup generator]
+The generator of $Z$ is the closed densely defined operator
+\[
+ Bf:=\lim_{h\downarrow0}\frac{Z(h)f-f}{h},
+ \]
+with domain
+\[
+ \Dom B:=\left\{f\in\Kcal:
+ \lim_{h\downarrow0}\frac{Z(h)f-f}{h}
+ \text{ exists in }\norm{\cdot}_{E}\right\}.
+\]
+Thus $Z(t)=e^{tB}$ in the $C_{0}$-semigroup sense.
+\end{definition}
+
+For $\lambda\in\rho(B)$, write
+\[
+ R(\lambda,B):=(\lambda I-B)^{-1}\in\Bcal(\Kcal).
+\]
+Because $Z$ is contractive, the Hille--Yosida theorem guarantees
+$\{\Repart\lambda>0\}\subset\rho(B)$; in particular $R(1,B)$ always exists.
+The historical criterion instead uses
+$(B+iI)^{-1}=-R(-i,B)$, whose minus sign is irrelevant to the norm.
+
+\begin{hypothesis}[Historical resolvent point]\label{hyp:minus-i}
+For the convention-fixed physical generator $B$, one has $-i\in\rho(B)$.
+\end{hypothesis}
+
+Hypothesis~\ref{hyp:minus-i} follows from the full model/resolvent theorem if
+that theorem gives the spectrum stated in Hypothesis~\ref{hyp:model}.  Until
+that identification is verified, $R(1,B)$ provides a guaranteed
+convention-free regularizer; Lemma~\ref{lem:respoint} shows that the exponent
+is the same whenever both resolvents exist.
+
+\begin{remark}[Alternative generator convention]
+If another source writes $Z(t)=e^{-itG}$, then the generator used here is
+$B=-iG$.  One must transform the resolvent factor at the same time.  Statements
+about $B+iI$ cannot be copied between these conventions without this
+conversion.
+\end{remark}
+
+\section{The regularized norm}\label{sec:regularized}
+
+\begin{definition}[Energy operator norm]
+For $T\in\Bcal(\Kcal)$,
+\[
+ \norm{T}_{E\to E}
+ :=\sup_{0\neq f\in\Kcal}
+   \frac{\norm{Tf}_{E}}{\norm{f}_{E}}.
+\]
+This is an operator norm on the reduced interaction Hilbert space.  It is not
+the value of the energy quadratic form and not a fixed-vector norm.
+\end{definition}
+
+\begin{definition}[Regularized Lax--Phillips quantity]
+For $t\geq0$ define
+\begin{align}
+ M(t)&:=\norm{Z(t)(B+iI)^{-1}}_{E\to E},
+ \label{eq:M}\\
+ \omega_{\mathrm{reg}}(B)
+ &:=\limsup_{t\to\infty}\frac1t\log M(t).
+ \label{eq:omega-reg}
+\end{align}
+The order of the two factors is immaterial because a $C_{0}$-semigroup
+commutes with every resolvent of its generator:
+\[
+ Z(t)(B+iI)^{-1}=(B+iI)^{-1}Z(t).
+\]
+\end{definition}
+
+\begin{proposition}[Exact graph-norm interpretation]\label{prop:graph}
+Define
+\[
+ \norm{f}_{B,i}:=\norm{(B+iI)f}_{E},\qquad f\in\Dom B.
+\]
+Then $\norm{\cdot}_{B,i}$ is equivalent to the usual graph norm
+$\norm{f}_{E}+\norm{Bf}_{E}$, and
+\begin{equation}\label{eq:graph-equality}
+ M(t)=
+ \norm{Z(t)}_{(\Dom B,\norm{\cdot}_{B,i})\to(\Kcal,\norm{\cdot}_{E})}
+ =\sup_{0\neq f\in\Dom B}
+   \frac{\norm{Z(t)f}_{E}}{\norm{(B+iI)f}_{E}}.
+\end{equation}
+\end{proposition}
+
+\begin{proof}
+The map $B+iI:(\Dom B,\norm{\cdot}_{B,i})\to\Kcal$ is an isometric
+bijection.  Substituting $h=(B+iI)f$ in \eqref{eq:M} proves
+\eqref{eq:graph-equality}.  The upper comparison with the standard graph norm
+is immediate.  Conversely, for $h=(B+iI)f$,
+\[
+ f=(B+iI)^{-1}h,
+ \qquad
+ Bf=h-if,
+\]
+so $\norm{f}_{E}+\norm{Bf}_{E}\leq
+(1+2\norm{(B+iI)^{-1}})\norm{h}_{E}$.  Hence the norms are equivalent.
+\end{proof}
+
+\begin{lemma}[The resolvent point is inessential]\label{lem:respoint}
+For fixed $\lambda,\mu\in\rho(B)$, the functions
+\[
+ M_{\lambda}(t):=\norm{Z(t)R(\lambda,B)}_{E\to E},
+ \qquad
+ M_{\mu}(t):=\norm{Z(t)R(\mu,B)}_{E\to E}
+\]
+differ by multiplicative constants independent of $t$.  Consequently their
+logarithmic limsup exponents are equal.
+\end{lemma}
+
+\begin{proof}
+The operator
+\[
+ C_{\lambda\mu}:=(\lambda I-B)(\mu I-B)^{-1}
+ =I+(\lambda-\mu)R(\mu,B)
+\]
+is boundedly invertible.  The identity
+$R(\mu,B)=R(\lambda,B)C_{\lambda\mu}$ and commutation with $Z(t)$ give
+\[
+ M_{\mu}(t)\leq\norm{C_{\lambda\mu}}M_{\lambda}(t).
+\]
+Interchanging $\lambda$ and $\mu$ gives the reverse comparison.
+\end{proof}
+
+\begin{remark}
+The regularizer is therefore not the special number $i$; it is the insertion
+of one fixed generator resolvent, equivalently one graph norm of regularity.
+It leaves the output energy norm unchanged.
+\end{remark}
+
+\section{The quoted RH-equivalent criterion and its logical status}
+\label{sec:criterion}
+
+\begin{definition}[Regularized asymptotic statement]\label{def:PF}
+For the convention-fixed modular automorphic Lax--Phillips semigroup, let
+$\mathsf{PF}_{\mathrm{reg}}$ denote the assertion
+\begin{equation}\label{eq:PF-criterion}
+ \boxed{\quad
+ \limsup_{t\to\infty}\frac1t
+ \log\norm{Z(t)(B+iI)^{-1}}_{E\to E}
+ =-\frac14.
+ \quad}
+\end{equation}
+\end{definition}
+
+\begin{quote}
+\textbf{Quoted Pavlov--Faddeev equivalence.}
+A 2017 retrospective explicitly attributes to the 1972/1975
+Pavlov--Faddeev paper the statement
+\begin{equation}\label{eq:quoted-iff}
+ \boxed{\qquad \mathrm{RH}\quad\Longleftrightarrow\quad
+ \mathsf{PF}_{\mathrm{reg}}.\qquad}
+\end{equation}
+See \cite[\S3.2, formula (3.6), p.~1004]{TakhtajanEtAl2017}.
+\end{quote}
+
+This document records \eqref{eq:quoted-iff} as a \emph{source claim}, not as a
+theorem rederived from the native definitions and proof in
+\cite{PavlovFaddeev1975}.  A publication should verify the original
+space, generator convention, hypotheses, and proof, and then establish their
+equivalence with Hypotheses~\ref{hyp:energy}, \ref{hyp:LP},
+\ref{hyp:minus-i}, \ref{hyp:inner}, and \ref{hyp:model}.
+
+Under the unconditional lower bound proved conditionally on
+Hypothesis~\ref{hyp:model} in Section~\ref{sec:easy},
+$\mathsf{PF}_{\mathrm{reg}}$ is equivalent to
+\begin{equation}\label{eq:PF-epsilon}
+ \text{for every $\eps>0$ there is $C_{\eps}<\infty$ such that}
+ \quad
+ M(t)\leq C_{\eps}e^{(-1/4+\eps)t}
+ \quad(t\geq0).
+\end{equation}
+The equivalence between the limsup upper bound and the family of
+$\eps$-estimates in \eqref{eq:PF-epsilon} uses local boundedness:
+$\sup_{0\leq t\leq T}\norm{Z(t)}<\infty$ for every $T<\infty$, and the
+regularizer is fixed and bounded.  A finite initial interval is therefore
+absorbed into $C_{\eps}$.  No estimate with a uniform constant at the boundary
+exponent $-1/4$ is asserted.
+
+\begin{problem}[Two separate handoff tasks]\label{prob:two-tasks}
+\leavevmode
+\begin{enumerate}[label=(T\arabic*)]
+ \item \emph{Historical verification/reproof:} verify the original
+       Pavlov--Faddeev statement and prove that its native objects are the
+       objects defined here.  Reproving
+       $\mathrm{RH}\Rightarrow\mathsf{PF}_{\mathrm{reg}}$ audits the quoted
+       theorem but does not decide RH.
+ \item \emph{Unconditional decision:} prove
+       $\mathsf{PF}_{\mathrm{reg}}$ without assuming RH, or produce a rigorous
+       failure of it that is tied to an off-critical-line zero.  By the quoted
+       equivalence---conditional on verifying that its native objects satisfy
+       Hypotheses~\ref{hyp:energy}, \ref{hyp:LP}, \ref{hyp:minus-i},
+       \ref{hyp:inner}, and \ref{hyp:model}---this task is exactly the decision
+       of RH.
+\end{enumerate}
+\end{problem}
+
+\begin{warning}[Retain the limsup]
+The family $Z(t)(B+iI)^{-1}$ is not itself a semigroup.  There is therefore no
+submultiplicativity argument that automatically turns the limsup into a limit
+or an infimum over $t>0$.
+\end{warning}
+
+\section{Conditional Hardy-space model and spectral input}\label{sec:model}
+
+The elementary model below is exact once an intertwining theorem is supplied.
+That physical-to-model theorem is isolated as Hypothesis~\ref{hyp:model};
+nothing in this section silently promotes a scattering resonance to a
+Hilbert-space eigenvalue.
+
+Let
+\[
+ \C_{+}:=\{s\in\C:\Repart s>0\},
+ \qquad
+ H^{2}(\C_{+})
+ :=\left\{f\text{ holomorphic}:
+ \sup_{x>0}\frac1{2\pi}\int_{\R}|f(x+iy)|^{2}\,dy<\infty\right\}.
+\]
+Define the candidate reduced zeta model function
+\[
+ \Theta_{0}(s):=\frac{\xi(2s)}{\xi(-2s)}
+               =\frac{\xi(2s)}{\xi(1+2s)},
+ \qquad \Repart s>0,
+\]
+and isolate the function-theoretic input needed to call it inner.
+
+\begin{hypothesis}[Reduced inner function]\label{hyp:inner}
+The function $\Theta_{0}$ belongs to $H^{\infty}(\C_{+})$, has unimodular
+boundary values almost everywhere on $i\R$, has zero mean type and no singular
+inner factor, and its zeros in $\C_{+}$, with multiplicity, are exactly
+$a=\rho/2$ over the nontrivial zeros of $\xi$.
+\end{hypothesis}
+
+Under Hypothesis~\ref{hyp:inner}, set
+\[
+ K_{0}:=H^{2}(\C_{+})\ominus\Theta_{0}H^{2}(\C_{+}),
+ \qquad
+ A_{0,t}:=P_{K_{0}}M_{e^{-ts}}\big|_{K_{0}}.
+\]
+Let $B_{0}$ generate $A_{0,t}^{*}$.  A zero $a$ of $\Theta_{0}$ gives a
+reproducing-kernel eigenvector
+\[
+ A_{0,t}^{*}k_{a}=e^{-t\bar a}k_{a},
+ \qquad
+ B_{0}k_{a}=-\bar a\,k_{a}.
+\]
+For $a=\rho/2$, this is
+\[
+ \lambda_{\rho}=-\frac{\bar\rho}{2}.
+\]
+The standard modular Eisenstein scattering coefficient is
+\[
+ c(u)=
+ \sqrt{\pi}\,
+ \frac{\Gamma(u-\frac12)\zeta(2u-1)}
+      {\Gamma(u)\zeta(2u)}.
+\]
+In the centered variable $u=1/2+s$, direct algebra gives
+\begin{equation}\label{eq:c-vs-theta}
+ c\!\left(\frac12+s\right)
+ =\frac{s+\frac12}{s-\frac12}\,\Theta_{0}(s).
+\end{equation}
+Thus the physical meromorphic coefficient has an exceptional pole at
+$s=1/2$, whereas $\Theta_{0}$ is the pole-cancelled inner factor.  The
+half-plane Blaschke factor
+\[
+ b_{1/2}(s):=\frac{s-\frac12}{s+\frac12}
+\]
+cancels that pole, and \eqref{eq:c-vs-theta} says exactly
+$b_{1/2}(s)c(1/2+s)=\Theta_{0}(s)$.  A causal characteristic function must be
+derived after specifying whether it models $c$, $c^{-1}$, or a pole-cancelled
+version.  In particular, the reciprocal of $b_{1/2}$ is meromorphic and is not
+itself an inner factor on $\C_{+}$.
+
+\begin{hypothesis}[Physical-to-model and resonance theorem]\label{hyp:model}
+The following two assertions hold.
+\begin{enumerate}[label=(M\arabic*)]
+\item There are a finite-dimensional exceptional space
+$\Kcal_{\mathrm{exc}}$, a semigroup $Z_{\mathrm{exc}}(t)$ on it, and a
+boundedly invertible map
+\[
+ W:\Kcal\longrightarrow K_{0}\oplus\Kcal_{\mathrm{exc}}
+\]
+such that
+\begin{equation}\label{eq:intertwine}
+ WZ(t)W^{-1}=A_{0,t}^{*}\oplus Z_{\mathrm{exc}}(t).
+\end{equation}
+The exceptional generator has spectral bound at most $-1/2$.
+\item The generator $B_{0}$ has meromorphic resolvent; every nontrivial zeta
+zero $\rho$, with its algebraic multiplicity, gives the actual root space at
+$-\bar\rho/2$; and
+\begin{equation}\label{eq:spectrum}
+ \sigma(B_{0})
+ =
+ \left\{-\frac{\bar\rho}{2}:\xi(\rho)=0\right\}.
+\end{equation}
+There is no additional boundary spectrum.
+\end{enumerate}
+\end{hypothesis}
+
+The final sentence of Hypothesis~\ref{hyp:model} requires proof in any model
+derivation.  For the reduced inner function it is supported by meromorphic
+continuation across every finite point of $i\R$, absence of finite zero
+accumulation, absence of a boundary singular inner factor, and zero mean type;
+one must still cite the relevant model-generator spectral theorem.
+
+An alternative historical parametrization is $(\rho-1)/2$.  The two multisets
+agree after applying $\rho\mapsto1-\bar\rho$ to the zeta zeros.  Under
+Hypothesis~\ref{hyp:model}, both conventions give
+\begin{equation}\label{eq:spectral-bound}
+ s(B):=\sup_{\lambda\in\sigma(B)}\Repart\lambda
+ =-\frac12\inf_{\xi(\rho)=0}\Repart\rho.
+\end{equation}
+
+\begin{warning}[Effect of the intertwiner]
+A bounded similarity preserves the exponential exponent because its condition
+number contributes only $O(1/t)$ after taking logarithms.  Exact equality of
+finite-time norms requires unitarity.  The finite exceptional summand cannot
+change the target exponent because its spectral/growth exponent is at most
+$-1/2$, strictly to the left of $-1/4$; this finite-dimensional claim must be
+checked in the chosen full model.
+\end{warning}
+
+\section{Why the criterion implies RH}\label{sec:easy}
+
+\begin{proposition}[Eigenvalue lower bound]\label{prop:eigen-lower}
+Suppose $Bv=\lambda v$ for some nonzero $v\in\Dom B$ and
+$\lambda\neq-i$.  Then
+\[
+ M(t)\geq\frac{e^{t\Repart\lambda}}{|\lambda+i|},
+ \qquad
+ \omega_{\mathrm{reg}}(B)\geq\Repart\lambda.
+\]
+\end{proposition}
+
+\begin{proof}
+Since $(B+iI)^{-1}v=(\lambda+i)^{-1}v$ and
+$Z(t)v=e^{t\lambda}v$,
+\[
+ \frac{\norm{Z(t)(B+iI)^{-1}v}_{E}}{\norm{v}_{E}}
+ =\frac{e^{t\Repart\lambda}}{|\lambda+i|}.
+\]
+Take the operator supremum and then the logarithmic limsup.
+\end{proof}
+
+Under Hypothesis~\ref{hyp:model}, applying
+Proposition~\ref{prop:eigen-lower} to
+$\lambda_{\rho}=-\bar\rho/2$ gives
+\begin{equation}\label{eq:zero-lower}
+ \omega_{\mathrm{reg}}(B)\geq-\frac12\Repart\rho
+ \qquad\text{for every nontrivial zero $\rho$.}
+\end{equation}
+The zero set is nonempty and symmetric under
+$\rho\mapsto1-\bar\rho$.  For each symmetric pair, at least one member has
+real part at most $1/2$, so \eqref{eq:zero-lower} gives
+$\omega_{\mathrm{reg}}(B)\geq-1/4$ unconditionally.  If
+$\omega_{\mathrm{reg}}(B)\leq-1/4$, then \eqref{eq:zero-lower} excludes
+every zero with $\Repart\rho<1/2$.  The symmetry
+$\rho\mapsto1-\bar\rho$ then excludes every zero with
+$\Repart\rho>1/2$.  Hence all nontrivial zeros lie on the critical line.
+
+Thus the implication
+\[
+ \omega_{\mathrm{reg}}(B)\leq-\frac14
+ \quad\Longrightarrow\quad\mathrm{RH}
+\]
+uses only the actual-eigenvector part of Hypothesis~\ref{hyp:model} and is not
+the difficult analytic direction.  A pole of a meromorphically continued
+scattering coefficient would not by itself suffice; the conversion to an
+eigenvector in $\Dom B$ is essential.
+
+\section{What an unconditional solution must establish}\label{sec:hard}
+
+\begin{problem}[Primary solver handoff]\label{prob:primary}
+First verify Hypotheses~\ref{hyp:energy}, \ref{hyp:LP},
+\ref{hyp:minus-i}, \ref{hyp:inner}, and \ref{hyp:model} for the native
+Pavlov--Faddeev semigroup.  Then, without assuming RH, prove
+\begin{equation}\label{eq:hard}
+ \forall\eps>0\ \exists C_{\eps}<\infty\ \forall t\geq0:
+ \qquad
+ \norm{Z(t)(B+iI)^{-1}}_{E\to E}
+ \leq C_{\eps}e^{(-1/4+\eps)t}.
+\end{equation}
+Together with the lower bound in Section~\ref{sec:easy}, this proves
+$\mathsf{PF}_{\mathrm{reg}}$, and Proposition~\ref{prop:eigen-lower} then
+proves RH under Hypothesis~\ref{hyp:model}.
+\end{problem}
+
+Conversely, locating a zeta zero off the critical line and applying the
+functional-equation symmetry produces a zero with real part below $1/2$;
+that symmetric zero immediately violates \eqref{eq:hard} through
+\eqref{eq:zero-lower} and disproves RH.  Merely showing
+that the operator norm in \eqref{eq:hard} is too large for a non-spectral,
+pseudospectral reason would instead refute the quoted implication
+$\mathrm{RH}\Rightarrow\mathsf{PF}_{\mathrm{reg}}$; it would not, without the
+verified Pavlov--Faddeev equivalence, disprove RH.  This distinction must be
+maintained in any claimed negative solution.
+
+If the goal is to audit the historical theorem rather than decide RH, the
+conditional statement to reprove is
+\begin{equation}\label{eq:conditional-hard}
+ \mathrm{RH}\Longrightarrow\eqref{eq:hard}.
+\end{equation}
+That implication is nontrivial because the location of $\sigma(B)$ alone does
+not control a nonnormal semigroup uniformly.
+
+Plausible analytic frameworks for \eqref{eq:hard} include:
+\begin{enumerate}[label=(R\arabic*)]
+ \item a weighted $L^{2}$ resolvent estimate combined with Plancherel;
+ \item a Hardy-space or Carleson-embedding estimate for the regularized model
+       multiplier;
+ \item a dyadic decomposition in spectral height with oscillatory
+       cancellation; or
+ \item a quantitative root-space synthesis estimate strong enough to control
+       the graph-norm unit ball.
+\end{enumerate}
+Each route must exploit the explicit automorphic scattering/resolvent formula;
+compactness, meromorphic continuation, or spectral location alone is
+insufficient.
+
+\begin{warning}[Heuristic obstruction to an absolute contour bound]
+\label{warn:L1}
+Do not adopt without proof the absolute operator-norm integrability of
+\[
+ \frac{d}{d\tau}
+ \bigl(R(a+i\tau,B)R(\lambda_{0},B)\bigr)
+ =
+ -iR(a+i\tau,B)^{2}R(\lambda_{0},B)
+\]
+on a vertical line $a=-1/4+\eps$.  On a critical-line eigenvector with
+eigenvalue $\lambda_n=-1/4+i\eta_n$, one obtains the lower bound
+\[
+ \norm{R(a+i\tau,B)^2R(\lambda_0,B)}
+ \geq
+ \frac{1}
+ {(\eps^2+(\tau-\eta_n)^2)\abs{\lambda_0-\lambda_n}}.
+\]
+Together with sufficiently strong distinct-ordinate density and separation
+estimates, these lower bounds would make the absolute
+$L^{1}(\R;\Bcal(\Kcal))$ integral diverge over dyadic blocks.  This document
+does not supply that arithmetic covering lemma, so divergence is recorded as
+a serious obstruction rather than a proved theorem.  A more plausible contour
+argument retains oscillation or uses an $L^{2}$/admissibility mechanism instead
+of taking the absolute operator norm before integration.
+\end{warning}
+
+\section{Statements that must not be substituted for the target}
+\label{sec:not-target}
+
+\subsection{The unregularized operator norm}
+
+Define
+\[
+ \norm{Z(t)}_{E\to E}
+ :=\sup_{0\neq f\in\Kcal}
+ \frac{\norm{Z(t)f}_{E}}{\norm{f}_{E}}.
+\]
+The assertion
+\begin{equation}\label{eq:unregularized}
+ \limsup_{t\to\infty}\frac1t\log\norm{Z(t)}_{E\to E}
+ \leq-\frac14
+\end{equation}
+implies the regularized estimate, up to the fixed factor
+$\norm{(B+iI)^{-1}}$, and is generally a strictly stronger demand.  It is not
+the target in Definition~\ref{def:PF}.  A separate theorem for the reduced
+scalar compressed-translation model gives $\norm{A_{0,t}}=1$ for all $t>0$,
+so its unregularized exponent is $0$.  Exact finite-time norm one transfers to
+the physical semigroup only through a unitary version of
+Hypothesis~\ref{hyp:model}; a bounded similarity transfers only the exponent.
+This model result does not conflict with the regularized criterion, because
+the vectors nearly attaining the unregularized norm may depend on $t$ and
+escape to high frequency; the resolvent suppresses precisely such
+graph-norm-unbounded data.
+
+The available 2002 edition of Lax's text displays the unregularized statement
+as equation~(54), calls it sufficient for RH, and attributes necessity to
+Pavlov--Faddeev~\cite{Lax2002}.  That later attribution is historically in
+tension with the explicitly resolvent-regularized Pavlov--Faddeev criterion
+quoted in \cite{TakhtajanEtAl2017}.  Until the original paper is checked, the
+two should be reported as distinct source statements rather than harmonized by
+assumption.
+
+\subsection{A dense fixed-vector condition}
+
+The Lax--Phillips 1980 exposition records the different sufficient condition
+\begin{equation}\label{eq:dense-vector}
+ \limsup_{t\to\infty}\frac1t\log\norm{Z(t)f}_{E}
+ <-\frac14,
+ \qquad f\in\Dcal,
+\end{equation}
+where $\Dcal$ is a dense no-standing-waves class
+\cite[\S6, formula (6.19)]{LaxPhillips1980}.  Its quantifier order is
+\[
+ \exists\Dcal\subset\Kcal\text{ dense}\quad
+ \forall f\in\Dcal\quad
+ \limsup_{t\to\infty}\frac1t\log\norm{Z(t)f}_{E}<-\frac14.
+\]
+There is no supremum over $f$ after $t$ is chosen.  Consequently this condition
+does not imply an operator-norm estimate without additional uniformity and
+must not be substituted for \eqref{eq:PF-criterion}.  The strict inequality is
+part of this separate sufficient condition; it is not the equality/upper-bound
+form of the regularized operator criterion.
+
+Under Hypothesis~\ref{hyp:model}, the strict dense-vector condition cannot in
+fact hold on a dense set.  A known critical-line zero supplies an isolated
+eigenvalue $\lambda$ with $\Repart\lambda=-1/4$ and nonzero finite-rank Riesz
+projection $P_{\lambda}$.  If a vector has exponential rate strictly below
+$-1/4$, commutation of $P_{\lambda}$ with $Z(t)$ forces
+$P_{\lambda}f=0$.  Hence every such vector lies in the proper closed subspace
+$\ker P_{\lambda}$, which cannot contain a dense class.  Thus the strict
+historical display is a sufficient how-not-to-prove-RH condition, not an
+RH-equivalent target in the model used here.
+
+\section{Logical dependencies and prohibited shortcuts}
+
+An attempted solution should identify which of the following inputs it uses.
+
+\begin{enumerate}[label=(L\arabic*)]
+ \item \textbf{Energy construction:} positivity of $E$ on the reduced
+       no-standing-waves space and unitarity of $U(t)$ there.
+ \item \textbf{Scattering construction:} the Lax--Phillips axioms for
+       $\Dcal_{\pm}$ and the contraction-semigroup property of $Z(t)$.
+ \item \textbf{Model theorem:} a precise unitary or boundedly invertible
+       intertwiner between the physical semigroup and the reduced $K_{0}$
+       realization plus its exceptional finite-dimensional summand, including
+       the adjoint convention.
+ \item \textbf{Resonance theorem:} meromorphic continuation of the generator
+       resolvent and the zeta-zero/eigenvalue correspondence with algebraic
+       multiplicities.
+ \item \textbf{Uniform analytic estimate:} a resolvent, contour, Hardy-space,
+       or admissibility estimate strong enough to prove \eqref{eq:hard}.
+\end{enumerate}
+
+The following shortcuts are invalid unless supplemented by new quantitative
+arguments:
+\begin{enumerate}[label=(S\arabic*)]
+ \item $s(B)=-1/4$ does not imply the regularized or unregularized growth
+       estimate for a nonnormal semigroup.
+ \item Completeness of eigenvectors or generalized eigenvectors does not imply
+       a uniform synthesis bound; a Riesz-basis or comparable quantitative
+       statement would be needed.
+ \item Compactness or meromorphicity of the resolvent does not control its norm
+       on high vertical lines.
+ \item A proof for every fixed $f$ does not permit exchanging
+       $\sup_{f}$ with $\limsup_{t\to\infty}$.
+ \item An approximate eigenvector used to prove $\norm{Z(t)}=1$ may depend on
+       $t$; it is not a counterexample to the graph-regularized estimate.
+ \item A Gearhart--Pr\"uss argument for the unregularized semigroup addresses a
+       different norm and cannot simply discard the fixed right resolvent.
+ \item Multiple zeta zeros produce root spaces and possible polynomial factors
+       in $t$; multiplicities must be retained throughout contour and basis
+       arguments.
+ \item Replacing $Z$ by $Z^{*}$ preserves operator norms and real spectral
+       bounds but not fixed-vector stability statements.  The convention must
+       remain fixed through the proof.
+\end{enumerate}
+
+\section{Acceptance criteria for a claimed solution}
+
+A proof or disproof handed back against this specification should contain all
+of the following.
+
+\begin{enumerate}[label=(A\arabic*)]
+ \item It states whether it works on the physical energy space or on a model
+       space and supplies the exact intertwining map if it transfers between
+       them.
+ \item It uses the positive reduced energy norm, not the raw indefinite form.
+ \item It estimates exactly $Z(t)(B+iI)^{-1}$, or an explicitly proved
+       equivalent fixed-resolvent/graph-norm quantity.
+ \item It keeps the order of quantifiers
+       $\forall\eps\,\exists C_{\eps}\,\forall t$.
+ \item It proves operator-norm uniformity over the whole graph-norm unit ball.
+ \item It treats the full scattering factor or proves that the omitted finite
+       factor cannot change the logarithmic exponent.
+ \item It tracks the generator/time/adjoint convention and the map from zeta
+       zeros to resonances.
+ \item It justifies every contour deformation, boundary limit, sum over poles,
+       and interchange of limits or suprema.
+ \item It handles zero multiplicities and generalized eigenvectors.
+ \item It does not infer a growth estimate merely from spectral location.
+\end{enumerate}
+
+\section{Provenance and source status}
+
+The regularized formula \eqref{eq:PF-criterion} is quoted as formula (3.6) in
+the 2017 survey on Faddeev's scientific work, where it is explicitly attributed
+to the Pavlov--Faddeev paper~\cite{TakhtajanEtAl2017,PavlovFaddeev1975}.  The
+original 1972/1975 paper should be consulted for a publication-level check of
+its exact native notation, hypotheses, and proof.  This document fixes a
+mathematically unambiguous target conditional on the five labeled
+identification hypotheses; it does not claim that freshly fixing notation
+proves those identifications.
+
+The Lax--Phillips monograph develops the automorphic energy and scattering
+spaces~\cite{LaxPhillips1976}; the 1980 survey records the separate dense-vector
+condition~\cite{LaxPhillips1980}.  Uetake gives an operator model for the
+automorphic Lax--Phillips generator and scattering matrix~\cite{Uetake2007};
+the exact theorem needed to establish Hypothesis~\ref{hyp:model}, with the
+present sign and exceptional-factor conventions, must be cited explicitly in
+any final proof.
+General $C_{0}$-semigroup and resolvent facts used above can be found in
+\cite{EngelNagel2000}.
+
+\begin{thebibliography}{99}
+
+\bibitem{PavlovFaddeev1975}
+B.~S.~Pavlov and L.~D.~Faddeev,
+\emph{Scattering theory and automorphic functions},
+J. Soviet Math. \textbf{3} (1975), no.~4, 522--548;
+English translation of Zap. Nauchn. Sem. LOMI \textbf{27} (1972), 161--193.
+
+\bibitem{LaxPhillips1976}
+P.~D.~Lax and R.~S.~Phillips,
+\emph{Scattering Theory for Automorphic Functions},
+Annals of Mathematics Studies, vol.~87,
+Princeton University Press, Princeton, NJ, 1976.
+
+\bibitem{LaxPhillips1980}
+P.~D.~Lax and R.~S.~Phillips,
+\emph{Scattering theory for automorphic functions},
+Bull. Amer. Math. Soc. (N.S.) \textbf{2} (1980), no.~2, 261--295,
+\href{https://doi.org/10.1090/S0273-0979-1980-14735-7}
+{doi:10.1090/S0273-0979-1980-14735-7}.
+
+\bibitem{Lax2002}
+P.~D.~Lax,
+\emph{Functional Analysis},
+Wiley-Interscience, New York, 2002; see \S37.9, equation (54), p.~511.
+
+\bibitem{TakhtajanEtAl2017}
+L.~A.~Takhtajan, A.~Yu.~Alekseev, I.~Ya.~Aref'eva,
+M.~A.~Semenov-Tian-Shansky, E.~K.~Sklyanin, F.~A.~Smirnov,
+and S.~L.~Shatashvili,
+\emph{Scientific heritage of L. D. Faddeev. Survey of papers},
+Russian Math. Surveys \textbf{72} (2017), no.~6, 977--1081;
+see \S3.2, formula (3.6), p.~1004,
+\href{https://doi.org/10.1070/RM9799}{doi:10.1070/RM9799}.
+
+\bibitem{Uetake2007}
+Y.~Uetake,
+\emph{The Lax--Phillips infinitesimal generator and the scattering matrix for
+automorphic functions},
+Ann. Polon. Math. \textbf{92} (2007), no.~2, 99--122,
+\href{https://doi.org/10.4064/ap92-2-1}{doi:10.4064/ap92-2-1}.
+
+\bibitem{EngelNagel2000}
+K.-J.~Engel and R.~Nagel,
+\emph{One-Parameter Semigroups for Linear Evolution Equations},
+Graduate Texts in Mathematics, vol.~194,
+Springer-Verlag, New York, 2000.
+
+\end{thebibliography}
+
+\end{document}
