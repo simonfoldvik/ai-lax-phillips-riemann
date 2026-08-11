@@ -1,4 +1,6 @@
-Every new session or unit of work must culminate in a new file `Main.tex`. The files goes into an appropriately numbered subfolder with a slug generated from the contents of `Main.tex` so as to be as informative as possible. The established pattern is:
+Every new session or unit of work must culminate in a new file `Main.tex` with documentclass `amsart`.
+
+The files go into an appropriately numbered subfolder with a slug generated from the contents of `Main.tex` so as to be as informative as possible. The established pattern is:
 
 ```bash
 01-unregularised-norm-one/Main.tex
