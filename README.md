@@ -21,6 +21,11 @@ The OpenAI counterexample to the [Erdös unit distance problem](https://openai.c
 It is therefore interesting to investigate whether AI systems can find a proof or counterexample through the Lax–Phillips–Faddeev–Pavlov connection.
 
 
+## Todos
+
+- Fix the norm and proper problem statement.
+
+
 ## Compilation
 
 With `latexmk` on `PATH`:
